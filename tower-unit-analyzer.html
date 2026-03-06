@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Unit Analyzer | Flipmo - Gulf Real Estate Investment Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0F1419;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1F4E5F 0%, #2A9D8F 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(218,165,32,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFB830;
+        }
+        
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff 0%, #DAA520 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .section-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #FFB830 0%, #DAA520 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-hint {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 16px;
+            background: rgba(31,78,95,0.3);
+            border: 2px solid rgba(42,157,143,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #DAA520;
+            background: rgba(31,78,95,0.5);
+        }
+        
+        select {
+            cursor: pointer;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            padding: 24px;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 12px 40px rgba(218,165,32,0.5);
+            margin-top: 20px;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 50px rgba(218,165,32,0.6);
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.6s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .recommendation-banner {
+            padding: 48px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            border: 3px solid #FFD700;
+        }
+        
+        .rec-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .rec-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .rec-subtitle {
+            font-size: 24px;
+            opacity: 0.95;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .floor-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .floor-card:hover {
+            transform: translateY(-4px);
+            border-color: #DAA520;
+            box-shadow: 0 12px 32px rgba(218,165,32,0.3);
+        }
+        
+        .floor-card.best {
+            border: 3px solid #DAA520;
+            background: linear-gradient(135deg, rgba(218,165,32,0.15), rgba(184,134,11,0.15));
+        }
+        
+        .best-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .floor-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #DAA520;
+            margin-bottom: 8px;
+        }
+        
+        .floor-price {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .floor-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .floor-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .metric-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #DAA520;
+        }
+        
+        .payment-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        
+        .plan-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 32px;
+        }
+        
+        .plan-card.recommended {
+            border: 3px solid #DAA520;
+            background: linear-gradient(135deg, rgba(218,165,32,0.15), rgba(184,134,11,0.15));
+        }
+        
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #DAA520;
+            margin-bottom: 20px;
+        }
+        
+        .plan-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .plan-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        
+        .plan-advantage {
+            background: rgba(16,185,129,0.15);
+            border-left: 3px solid #10b981;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #d1fae5;
+        }
+        
+        .analysis-box {
+            background: rgba(31,78,95,0.3);
+            border: 1px solid rgba(42,157,143,0.3);
+            border-radius: 20px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+        
+        .analysis-box h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #DAA520;
+            margin-bottom: 20px;
+        }
+        
+        .insights-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insight-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #DAA520;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .card { padding: 28px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>🏢 Tower Unit Analyzer</h1>
+        <p>Maximize ROI on off-plan tower investments. Find the perfect unit, floor, and payment plan.</p>
+    </div>
+
+    <div class="container">
+        <div id="inputForm" class="card">
+            <h2 class="section-title">Project Information</h2>
+            
+            <div class="input-group">
+                <label class="input-label">Project Name</label>
+                <input type="text" id="projectName" placeholder="Burj Royale, Marina Heights, etc." required>
+            </div>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label class="input-label">Location</label>
+                    <select id="location">
+                        <option value="">Select Location</option>
+                        <optgroup label="🇦🇪 United Arab Emirates">
+                            <option value="Dubai Marina">Dubai Marina</option>
+                            <option value="Downtown Dubai">Downtown Dubai</option>
+                            <option value="Business Bay">Business Bay</option>
+                            <option value="JBR">Jumeirah Beach Residence (JBR)</option>
+                            <option value="Palm Jumeirah">Palm Jumeirah</option>
+                            <option value="Abu Dhabi">Abu Dhabi</option>
+                            <option value="Sharjah">Sharjah</option>
+                        </optgroup>
+                        <optgroup label="🇸🇦 Saudi Arabia">
+                            <option value="Riyadh">Riyadh</option>
+                            <option value="Jeddah">Jeddah</option>
+                            <option value="Dammam">Dammam</option>
+                        </optgroup>
+                        <optgroup label="🇶🇦 Qatar">
+                            <option value="Doha">Doha</option>
+                            <option value="West Bay">West Bay, Doha</option>
+                            <option value="The Pearl">The Pearl-Qatar</option>
+                        </optgroup>
+                        <optgroup label="🇰🇼 Kuwait">
+                            <option value="Kuwait City">Kuwait City</option>
+                            <option value="Salmiya">Salmiya</option>
+                        </optgroup>
+                        <optgroup label="🇧🇭 Bahrain">
+                            <option value="Manama">Manama</option>
+                            <option value="Seef">Seef District</option>
+                        </optgroup>
+                        <optgroup label="🇴🇲 Oman">
+                            <option value="Muscat">Muscat</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Developer</label>
+                    <input type="text" id="developer" placeholder="Emaar, Damac, Nakheel, etc.">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="input-group">
+                    <label class="input-label">Total Floors</label>
+                    <input type="number" id="totalFloors" placeholder="50" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Handover Date</label>
+                    <input type="text" id="handoverDate" placeholder="Q4 2027">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Payment Plan</label>
+                    <select id="paymentPlan">
+                        <option value="20/80">20% Down / 80% Handover</option>
+                        <option value="30/70">30% Down / 70% Handover</option>
+                        <option value="40/60">40% During Construction / 60% Handover</option>
+                        <option value="50/50">50% During Construction / 50% Handover</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-top: 32px;">
+                <label class="input-label">Currency</label>
+                <select id="currency" onchange="updateCurrency()">
+                    <option value="AED" data-symbol="AED" data-rate="1" selected>🇦🇪 UAE Dirham (AED)</option>
+                    <option value="SAR" data-symbol="SAR" data-rate="0.98">🇸🇦 Saudi Riyal (SAR)</option>
+                    <option value="QAR" data-symbol="QAR" data-rate="1.01">🇶🇦 Qatari Riyal (QAR)</option>
+                    <option value="KWD" data-symbol="KWD" data-rate="0.08">🇰🇼 Kuwaiti Dinar (KWD)</option>
+                    <option value="BHD" data-symbol="BHD" data-rate="0.10">🇧🇭 Bahraini Dinar (BHD)</option>
+                    <option value="OMR" data-symbol="OMR" data-rate="0.10">🇴🇲 Omani Rial (OMR)</option>
+                    <option value="USD" data-symbol="$" data-rate="0.27">🇺🇸 US Dollar (USD)</option>
+                </select>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 40px;">Unit Details</h2>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label class="input-label">Unit Type</label>
+                    <select id="unitType">
+                        <option value="Studio">Studio</option>
+                        <option value="1BR">1 Bedroom</option>
+                        <option value="2BR">2 Bedroom</option>
+                        <option value="3BR">3 Bedroom</option>
+                        <option value="Penthouse">Penthouse</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Unit Size (sqft)</label>
+                    <input type="number" id="unitSize" placeholder="850" required>
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 40px;">Floor Options to Compare</h2>
+            <span class="input-hint">Enter prices for different floors to find optimal ROI</span>
+
+            <div class="grid-3">
+                <div class="input-group">
+                    <label class="input-label">Floor 15-25 Price</label>
+                    <input type="number" id="lowFloorPrice" placeholder="950000" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Floor 26-40 Price</label>
+                    <input type="number" id="midFloorPrice" placeholder="1050000" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Floor 41+ Price</label>
+                    <input type="number" id="highFloorPrice" placeholder="1180000" required>
+                </div>
+            </div>
+
+            <h2 class="section-title" style="margin-top: 40px;">Market Data</h2>
+
+            <div class="grid-2">
+                <div class="input-group">
+                    <label class="input-label">Expected Rental Yield (%)</label>
+                    <span class="input-hint">Annual rental income as % of property value</span>
+                    <input type="number" id="rentalYield" placeholder="6.5" step="0.1" required>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Expected Appreciation (%/year)</label>
+                    <span class="input-hint">Annual property value increase</span>
+                    <input type="number" id="appreciation" placeholder="7" step="0.1" required>
+                </div>
+            </div>
+
+            <button class="analyze-btn" onclick="analyzeTower()">
+                🔍 Analyze Tower Investment
+            </button>
+        </div>
+
+        <div id="results" class="results">
+            <!-- Results will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        let currentCurrency = 'AED';
+        let currentSymbol = 'AED';
+        let lastResults = null;
+
+        function updateCurrency() {
+            const select = document.getElementById('currency');
+            currentCurrency = select.value;
+            currentSymbol = select.options[select.selectedIndex].dataset.symbol;
+            
+            // Re-render results if they exist
+            if (lastResults) {
+                displayResults(lastResults);
+            }
+        }
+
+        function formatCurrency(amount) {
+            return `${currentSymbol} ${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+        }
+
+        function formatCurrencyK(amount) {
+            return `${currentSymbol} ${(amount/1000).toFixed(0)}K`;
+        }
+
+        function analyzeTower() {
+            const data = {
+                projectName: document.getElementById('projectName').value,
+                location: document.getElementById('location').value,
+                developer: document.getElementById('developer').value,
+                totalFloors: parseInt(document.getElementById('totalFloors').value),
+                handoverDate: document.getElementById('handoverDate').value,
+                paymentPlan: document.getElementById('paymentPlan').value,
+                unitType: document.getElementById('unitType').value,
+                unitSize: parseInt(document.getElementById('unitSize').value),
+                lowFloorPrice: parseFloat(document.getElementById('lowFloorPrice').value),
+                midFloorPrice: parseFloat(document.getElementById('midFloorPrice').value),
+                highFloorPrice: parseFloat(document.getElementById('highFloorPrice').value),
+                rentalYield: parseFloat(document.getElementById('rentalYield').value),
+                appreciation: parseFloat(document.getElementById('appreciation').value)
+            };
+
+            if (!data.projectName || !data.unitSize || !data.lowFloorPrice) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            lastResults = data;
+            displayResults(data);
+        }
+
+        function displayResults(data) {
+            // Calculate metrics for each floor range
+            const floors = [
+                {
+                    range: "Floor 15-25",
+                    floor: "20",
+                    price: data.lowFloorPrice,
+                    pricePerSqft: data.lowFloorPrice / data.unitSize
+                },
+                {
+                    range: "Floor 26-40",
+                    floor: "33",
+                    price: data.midFloorPrice,
+                    pricePerSqft: data.midFloorPrice / data.unitSize
+                },
+                {
+                    range: "Floor 41+",
+                    floor: "45",
+                    price: data.highFloorPrice,
+                    pricePerSqft: data.highFloorPrice / data.unitSize
+                }
+            ];
+
+            floors.forEach(f => {
+                f.annualRental = f.price * (data.rentalYield / 100);
+                f.monthlyRental = f.annualRental / 12;
+                f.handoverValue = f.price * (1 + (data.appreciation / 100) * 2.5); // 2.5 years avg
+                f.handoverProfit = f.handoverValue - f.price;
+                f.roi = (f.handoverProfit / f.price) * 100;
+                f.totalReturn = f.handoverProfit + (f.annualRental * 2);
+                f.effectiveROI = (f.totalReturn / f.price) * 100;
+            });
+
+            // Find best option
+            const bestFloor = floors.reduce((best, current) => 
+                current.effectiveROI > best.effectiveROI ? current : best
+            );
+
+            // Calculate payment plans
+            const paymentPlans = calculatePaymentPlans(bestFloor.price, data.paymentPlan);
+
+            // Generate HTML
+            const html = `
+                <div class="card">
+                    <div class="recommendation-banner">
+                        <div class="rec-icon">🏆</div>
+                        <div class="rec-title">Best Option: ${bestFloor.range}</div>
+                        <div class="rec-subtitle">Optimal ROI of ${bestFloor.effectiveROI.toFixed(1)}%</div>
+                    </div>
+
+                    <h2 class="section-title">Project Overview</h2>
+                    <div class="analysis-box">
+                        <p style="font-size: 18px; line-height: 1.8; margin-bottom: 16px;">
+                            <strong>${data.projectName}</strong> • ${data.location}<br>
+                            Developer: ${data.developer} • ${data.unitType} (${data.unitSize} sqft)<br>
+                            Handover: ${data.handoverDate} • Payment: ${data.paymentPlan}
+                        </p>
+                    </div>
+
+                    <h2 class="section-title">Floor Comparison</h2>
+                    <div class="comparison-grid">
+                        ${floors.map(f => `
+                            <div class="floor-card ${f.range === bestFloor.range ? 'best' : ''}">
+                                ${f.range === bestFloor.range ? '<div class="best-badge">⭐ BEST VALUE</div>' : ''}
+                                <div class="floor-number">${f.range}</div>
+                                <div class="floor-price">${formatCurrencyK(f.price)}</div>
+                                <div class="floor-metrics">
+                                    <div class="floor-metric">
+                                        <span class="metric-label">Price/sqft</span>
+                                        <span class="metric-value">${formatCurrency(f.pricePerSqft)}</span>
+                                    </div>
+                                    <div class="floor-metric">
+                                        <span class="metric-label">Monthly Rent</span>
+                                        <span class="metric-value">${formatCurrency(f.monthlyRental)}</span>
+                                    </div>
+                                    <div class="floor-metric">
+                                        <span class="metric-label">Handover Value</span>
+                                        <span class="metric-value">${formatCurrencyK(f.handoverValue)}</span>
+                                    </div>
+                                    <div class="floor-metric">
+                                        <span class="metric-label">Profit at Handover</span>
+                                        <span class="metric-value">${formatCurrencyK(f.handoverProfit)}</span>
+                                    </div>
+                                    <div class="floor-metric">
+                                        <span class="metric-label">Total ROI</span>
+                                        <span class="metric-value">${f.effectiveROI.toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h2 class="section-title">Payment Plan Analysis</h2>
+                    <div class="payment-plans">
+                        ${paymentPlans.map((plan, i) => `
+                            <div class="plan-card ${i === 0 ? 'recommended' : ''}">
+                                <div class="plan-name">${plan.name}</div>
+                                <div class="plan-breakdown">
+                                    <div class="plan-row">
+                                        <span>Initial Payment</span>
+                                        <strong>${formatCurrency(plan.initial)}</strong>
+                                    </div>
+                                    <div class="plan-row">
+                                        <span>Construction Payments</span>
+                                        <strong>${formatCurrency(plan.construction)}</strong>
+                                    </div>
+                                    <div class="plan-row">
+                                        <span>At Handover</span>
+                                        <strong>${formatCurrency(plan.handover)}</strong>
+                                    </div>
+                                    <div class="plan-row">
+                                        <span>Opportunity Cost</span>
+                                        <strong>${formatCurrency(plan.opportunityCost)}</strong>
+                                    </div>
+                                </div>
+                                ${i === 0 ? `<div class="plan-advantage">✓ ${plan.advantage}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <h2 class="section-title">Investment Insights</h2>
+                    <div class="analysis-box">
+                        <h3>💡 Key Recommendations</h3>
+                        <ul class="insights-list">
+                            <li class="insight-item">
+                                <strong>Optimal Floor Range:</strong> ${bestFloor.range} offers the best balance of premium and ROI at ${bestFloor.effectiveROI.toFixed(1)}% total return.
+                            </li>
+                            <li class="insight-item">
+                                <strong>Rental Income:</strong> Expected monthly rental of ${formatCurrency(bestFloor.monthlyRental)} (${data.rentalYield}% yield).
+                            </li>
+                            <li class="insight-item">
+                                <strong>Capital Appreciation:</strong> Projected ${data.appreciation}% annual growth = ${formatCurrencyK(bestFloor.handoverProfit)} profit at handover.
+                            </li>
+                            <li class="insight-item">
+                                <strong>Payment Strategy:</strong> ${paymentPlans[0].name} minimizes opportunity cost while maintaining flexibility.
+                            </li>
+                            <li class="insight-item">
+                                <strong>Exit Strategy:</strong> Sell at handover for ${(((bestFloor.handoverProfit/bestFloor.price)*100)).toFixed(1)}% profit, or hold for rental income.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="exportPDF()">📄 Export Report</button>
+                        <button class="btn btn-secondary" onclick="analyzeAnother()">🔄 Analyze Another Project</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('inputForm').style.display = 'none';
+            document.getElementById('results').innerHTML = html;
+            document.getElementById('results').classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function calculatePaymentPlans(price, currentPlan) {
+            const plans = [
+                {
+                    name: "40/60 Plan",
+                    initial: price * 0.10,
+                    construction: price * 0.30,
+                    handover: price * 0.60,
+                    opportunityCost: price * 0.40 * 0.08, // 8% opportunity cost
+                    advantage: "Best balance - lower capital locked, maintains flexibility"
+                },
+                {
+                    name: "20/80 Plan",
+                    initial: price * 0.05,
+                    construction: price * 0.15,
+                    handover: price * 0.80,
+                    opportunityCost: price * 0.20 * 0.08,
+                    advantage: "Lowest initial capital required"
+                },
+                {
+                    name: "50/50 Plan",
+                    initial: price * 0.20,
+                    construction: price * 0.30,
+                    handover: price * 0.50,
+                    opportunityCost: price * 0.50 * 0.08,
+                    advantage: "Highest capital efficiency for investors with other opportunities"
+                }
+            ];
+
+            return plans.sort((a, b) => a.opportunityCost - b.opportunityCost);
+        }
+
+        function exportPDF() {
+            alert('📄 PDF export coming soon!');
+        }
+
+        function analyzeAnother() {
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('inputForm').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

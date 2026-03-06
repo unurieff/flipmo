@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit Strategy Simulator | Flipmo - Maximize Your Investment Returns</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0F1419;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* FLIPMO PREMIUM COLORS */
+        .hero {
+            background: linear-gradient(135deg, #1F4E5F 0%, #2A9D8F 50%, #FF6B35 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(31, 78, 95, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(255, 107, 53, 0.3) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFB830;
+        }
+        
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .section-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #FF6B35 0%, #2A9D8F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-hint {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 32px;
+            font-family: 'Clash Display', sans-serif;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5);
+        }
+        
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        
+        .strategy-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s;
+        }
+        
+        .strategy-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 107, 53, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        
+        .strategy-card.winner {
+            border: 2px solid #FF6B35;
+            background: rgba(255, 107, 53, 0.08);
+            position: relative;
+        }
+        
+        .winner-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .strategy-name {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #FF6B35;
+        }
+        
+        .roi-display {
+            font-size: 36px;
+            font-weight: 800;
+            color: #2A9D8F;
+            margin-bottom: 20px;
+            font-family: 'Clash Display', sans-serif;
+        }
+        
+        .metric {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .metric:last-of-type {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 4px;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 16px;
+        }
+        
+        .risk-low {
+            background: rgba(42, 157, 143, 0.2);
+            color: #2A9D8F;
+            border: 1px solid rgba(42, 157, 143, 0.3);
+        }
+        
+        .risk-medium {
+            background: rgba(255, 184, 48, 0.2);
+            color: #FFB830;
+            border: 1px solid rgba(255, 184, 48, 0.3);
+        }
+        
+        .risk-high {
+            background: rgba(255, 107, 53, 0.2);
+            color: #FF6B35;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        .pros-cons {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .pros-cons h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .pros-cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .pros-cons li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+        
+        .pros-cons li::before {
+            position: absolute;
+            left: 0;
+        }
+        
+        .pros li::before {
+            content: '✓';
+            color: #2A9D8F;
+        }
+        
+        .cons li::before {
+            content: '✗';
+            color: #FF6B35;
+        }
+        
+        .recommendation {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 4px solid #FF6B35;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 32px;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 22px;
+            color: #FF6B35;
+            margin-bottom: 12px;
+        }
+        
+        .recommendation p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .export-btn {
+            background: rgba(42, 157, 143, 0.15);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+            color: #2A9D8F;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            margin-top: 24px;
+        }
+        
+        .export-btn:hover {
+            background: rgba(42, 157, 143, 0.25);
+            border-color: rgba(42, 157, 143, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .currency-selector select {
+            width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .hero p { font-size: 18px; }
+            .card { padding: 28px; }
+            .strategies-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>🎯 Exit Strategy Simulator</h1>
+        <p>Sell vs Hold vs Rent vs Refinance. Compare all scenarios. Maximize returns.</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="section-title">Property Information</h2>
+            
+            <div class="currency-selector">
+                <label class="input-label">Currency:</label>
+                <select id="currency">
+                    <option value="AED" data-symbol="AED" data-rate="1">🇦🇪 UAE Dirham (AED)</option>
+                    <option value="SAR" data-symbol="SAR" data-rate="0.98">🇸🇦 Saudi Riyal (SAR)</option>
+                    <option value="QAR" data-symbol="QAR" data-rate="1.01">🇶🇦 Qatari Riyal (QAR)</option>
+                    <option value="KWD" data-symbol="KWD" data-rate="0.08">🇰🇼 Kuwaiti Dinar (KWD)</option>
+                    <option value="BHD" data-symbol="BHD" data-rate="0.10">🇧🇭 Bahraini Dinar (BHD)</option>
+                    <option value="OMR" data-symbol="OMR" data-rate="0.10">🇴🇲 Omani Rial (OMR)</option>
+                    <option value="USD" data-symbol="$" data-rate="0.27">🇺🇸 US Dollar (USD)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Current Property Value</label>
+                <input type="number" id="currentValue" value="2500000" placeholder="e.g., 2500000">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Purchase Price (Your Investment)</label>
+                <input type="number" id="purchasePrice" value="2000000" placeholder="e.g., 2000000">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Outstanding Mortgage</label>
+                <input type="number" id="mortgage" value="0" placeholder="e.g., 500000">
+                <div class="input-hint">Enter 0 if property is fully paid</div>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Annual Rental Income</label>
+                <input type="number" id="rentalIncome" value="150000" placeholder="e.g., 150000">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Annual Appreciation Rate (%)</label>
+                <input type="number" id="appreciation" value="5" placeholder="e.g., 5" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Holding Period (Years)</label>
+                <input type="number" id="holdingPeriod" value="5" placeholder="e.g., 5">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Annual Operating Expenses (%)</label>
+                <input type="number" id="expenses" value="20" placeholder="e.g., 20" step="1">
+                <div class="input-hint">Maintenance, property management, etc.</div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateStrategies()">🚀 Simulate Exit Strategies</button>
+        </div>
+
+        <div id="results" style="display:none;">
+            <div class="card">
+                <h2 class="section-title">Strategy Comparison</h2>
+                <div class="strategies-grid" id="strategiesGrid"></div>
+                <div class="recommendation" id="recommendation"></div>
+                <button class="export-btn" onclick="exportPDF()">📄 Export Analysis as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCurrency = 'AED';
+        let currentSymbol = 'AED';
+        let calculationResults = null;
+
+        document.getElementById('currency').addEventListener('change', function(e) {
+            currentCurrency = e.target.value;
+            currentSymbol = e.target.options[e.target.selectedIndex].dataset.symbol;
+            if (calculationResults) {
+                displayResults(calculationResults);
+            }
+        });
+
+        function formatCurrency(amount) {
+            return `${currentSymbol} ${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+        }
+
+        function calculateStrategies() {
+            const currentValue = parseFloat(document.getElementById('currentValue').value);
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value);
+            const mortgage = parseFloat(document.getElementById('mortgage').value);
+            const rentalIncome = parseFloat(document.getElementById('rentalIncome').value);
+            const appreciation = parseFloat(document.getElementById('appreciation').value) / 100;
+            const years = parseFloat(document.getElementById('holdingPeriod').value);
+            const expenseRate = parseFloat(document.getElementById('expenses').value) / 100;
+            
+            // Strategy 1: Sell Now
+            const sellCosts = currentValue * 0.05; // 5% selling costs
+            const sellProfit = currentValue - mortgage - sellCosts - purchasePrice;
+            const sellROI = (sellProfit / purchasePrice) * 100;
+            
+            // Strategy 2: Hold & Rent
+            const netRental = rentalIncome * (1 - expenseRate);
+            const totalRentalIncome = netRental * years;
+            const futureValue = currentValue * Math.pow(1 + appreciation, years);
+            const futureSellCosts = futureValue * 0.05;
+            const holdProfit = (futureValue - mortgage - futureSellCosts - purchasePrice) + totalRentalIncome;
+            const holdROI = (holdProfit / purchasePrice) * 100;
+            
+            // Strategy 3: Refinance & Hold
+            const refinanceAmount = currentValue * 0.80; // 80% LTV
+            const cashOut = refinanceAmount - mortgage;
+            const newMortgage = refinanceAmount;
+            const mortgagePayment = (newMortgage * 0.04) / 12 * 12; // 4% interest
+            const refinanceNetRental = netRental - mortgagePayment;
+            const refinanceTotalCashflow = (refinanceNetRental * years) + cashOut;
+            const refinanceFutureValue = futureValue * Math.pow(1 + appreciation, years);
+            const refinanceProfit = refinanceTotalCashflow + (refinanceFutureValue - newMortgage - futureSellCosts - purchasePrice);
+            const refinanceROI = (refinanceProfit / purchasePrice) * 100;
+            
+            // Strategy 4: BRRRR (Buy-Rehab-Rent-Refinance-Repeat)
+            const brrrRefinance = currentValue * 0.80;
+            const brrrCashOut = brrrRefinance - mortgage;
+            const brrrMortgagePayment = (brrrRefinance * 0.04) / 12 * 12;
+            const brrrNetRental = netRental - brrrMortgagePayment;
+            const brrrTotalCashflow = brrrNetRental * years;
+            const brrrROI = brrrCashOut > purchasePrice ? 'Infinite' : ((brrrCashOut + brrrTotalCashflow) / (purchasePrice - brrrCashOut)) * 100;
+            
+            const strategies = [
+                {
+                    name: 'Sell Now',
+                    roi: sellROI,
+                    profit: sellProfit,
+                    cashNow: currentValue - mortgage - sellCosts,
+                    risk: 'Low',
+                    pros: ['Immediate cash', 'No ongoing costs', 'Clear exit'],
+                    cons: ['Miss future appreciation', 'No rental income', 'Capital gains tax']
+                },
+                {
+                    name: 'Hold & Rent',
+                    roi: holdROI,
+                    profit: holdProfit,
+                    cashNow: 0,
+                    totalIncome: totalRentalIncome,
+                    futureValue: futureValue,
+                    risk: 'Medium',
+                    pros: ['Rental income', 'Property appreciation', 'Tax benefits'],
+                    cons: ['Tenant risk', 'Maintenance costs', 'Illiquid']
+                },
+                {
+                    name: 'Refinance & Hold',
+                    roi: refinanceROI,
+                    profit: refinanceProfit,
+                    cashNow: cashOut,
+                    monthlyIncome: refinanceNetRental / 12,
+                    risk: 'Medium',
+                    pros: ['Pull cash out', 'Keep asset', 'Leverage growth'],
+                    cons: ['Higher debt', 'Lower cashflow', 'Refi costs']
+                },
+                {
+                    name: 'BRRRR',
+                    roi: brrrROI,
+                    profit: brrrCashOut + brrrTotalCashflow,
+                    cashNow: brrrCashOut,
+                    monthlyIncome: brrrNetRental / 12,
+                    risk: 'High',
+                    pros: ['Recycle capital', 'Infinite ROI potential', 'Scale faster'],
+                    cons: ['Complex', 'High leverage', 'Market dependent']
+                }
+            ];
+            
+            calculationResults = strategies;
+            displayResults(strategies);
+        }
+        
+        function displayResults(strategies) {
+            const maxROI = Math.max(...strategies.map(s => typeof s.roi === 'number' ? s.roi : 0));
+            
+            const html = strategies.map(strategy => {
+                const isWinner = (typeof strategy.roi === 'number' && strategy.roi === maxROI) || 
+                               (strategy.roi === 'Infinite');
+                
+                return `
+                    <div class="strategy-card ${isWinner ? 'winner' : ''}">
+                        ${isWinner ? '<div class="winner-badge">Best ROI</div>' : ''}
+                        <div class="strategy-name">${strategy.name}</div>
+                        
+                        <div class="roi-display">
+                            ${typeof strategy.roi === 'number' ? strategy.roi.toFixed(1) + '%' : strategy.roi}
+                        </div>
+                        
+                        <div class="metric">
+                            <div class="metric-label">Total Profit</div>
+                            <div class="metric-value">${formatCurrency(strategy.profit)}</div>
+                        </div>
+                        
+                        <div class="metric">
+                            <div class="metric-label">Cash Now</div>
+                            <div class="metric-value">${formatCurrency(strategy.cashNow)}</div>
+                        </div>
+                        
+                        ${strategy.totalIncome ? `
+                        <div class="metric">
+                            <div class="metric-label">Total Rental Income</div>
+                            <div class="metric-value">${formatCurrency(strategy.totalIncome)}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${strategy.monthlyIncome ? `
+                        <div class="metric">
+                            <div class="metric-label">Monthly Cashflow</div>
+                            <div class="metric-value">${formatCurrency(strategy.monthlyIncome)}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${strategy.futureValue ? `
+                        <div class="metric">
+                            <div class="metric-label">Future Property Value</div>
+                            <div class="metric-value">${formatCurrency(strategy.futureValue)}</div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="risk-badge risk-${strategy.risk.toLowerCase()}">${strategy.risk} Risk</div>
+                        
+                        <div class="pros-cons">
+                            <h4>Pros:</h4>
+                            <ul class="pros">
+                                ${strategy.pros.map(pro => `<li>${pro}</li>`).join('')}
+                            </ul>
+                            <h4 style="margin-top: 12px;">Cons:</h4>
+                            <ul class="cons">
+                                ${strategy.cons.map(con => `<li>${con}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('strategiesGrid').innerHTML = html;
+            
+            const winner = strategies.find(s => 
+                (typeof s.roi === 'number' && s.roi === maxROI) || s.roi === 'Infinite'
+            );
+            
+            const recommendation = `
+                <h3>💡 Recommended Strategy: ${winner.name}</h3>
+                <p><strong>Why this works:</strong> ${getRecommendationText(winner)}</p>
+            `;
+            
+            document.getElementById('recommendation').innerHTML = recommendation;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function getRecommendationText(strategy) {
+            const texts = {
+                'Sell Now': `With ${formatCurrency(strategy.cashNow)} in immediate cash and no ongoing obligations, this is perfect if you need liquidity or want to exit the market. Your ${strategy.roi.toFixed(1)}% ROI represents solid gains.`,
+                'Hold & Rent': `This strategy maximizes long-term wealth with ${formatCurrency(strategy.totalIncome)} in rental income plus property appreciation to ${formatCurrency(strategy.futureValue)}. Best for patient investors seeking ${strategy.roi.toFixed(1)}% ROI.`,
+                'Refinance & Hold': `Pull out ${formatCurrency(strategy.cashNow)} now while keeping the asset. Your ${formatCurrency(strategy.monthlyIncome)} monthly cashflow covers the mortgage while you benefit from appreciation. ${strategy.roi.toFixed(1)}% ROI with recycled capital.`,
+                'BRRRR': `Advanced strategy yielding ${strategy.roi === 'Infinite' ? 'infinite' : strategy.roi.toFixed(1) + '%'} ROI. Extract ${formatCurrency(strategy.cashNow)} to reinvest while maintaining ${formatCurrency(strategy.monthlyIncome)} monthly cashflow. Perfect for scaling your portfolio.`
+            };
+            return texts[strategy.name];
+        }
+        
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Exit Strategy Analysis Report', 20, 20);
+            
+            doc.setFontSize(12);
+            doc.text(`Currency: ${currentCurrency}`, 20, 35);
+            doc.text(`Property Value: ${formatCurrency(parseFloat(document.getElementById('currentValue').value))}`, 20, 45);
+            doc.text(`Investment: ${formatCurrency(parseFloat(document.getElementById('purchasePrice').value))}`, 20, 55);
+            
+            let y = 70;
+            calculationResults.forEach((strategy, idx) => {
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFontSize(14);
+                doc.text(strategy.name, 20, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.text(`ROI: ${typeof strategy.roi === 'number' ? strategy.roi.toFixed(1) + '%' : strategy.roi}`, 25, y);
+                y += 6;
+                doc.text(`Total Profit: ${formatCurrency(strategy.profit)}`, 25, y);
+                y += 6;
+                doc.text(`Cash Now: ${formatCurrency(strategy.cashNow)}`, 25, y);
+                y += 6;
+                doc.text(`Risk Level: ${strategy.risk}`, 25, y);
+                y += 12;
+            });
+            
+            doc.save('exit-strategy-analysis.pdf');
+        }
+    </script>
+</body>
+</html>

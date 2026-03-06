@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipmo - Real Estate Investment Tools for Smart Investors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sunset-orange: #FF6B35;
+            --coral: #FF8C61;
+            --deep-teal: #1F4E5F;
+            --bright-teal: #2A9D8F;
+            --warm-yellow: #FFB830;
+            --cream: #FFF8F0;
+            --off-white: #FEFEFE;
+            --rich-black: #0F1419;
+            --gray-600: #4A5568;
+            --gray-400: #A0AEC0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--off-white);
+            color: var(--rich-black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(135deg, 
+                var(--cream) 0%, 
+                #FFE5D9 25%,
+                #FFD4C4 50%,
+                var(--cream) 75%,
+                var(--off-white) 100%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Navigation */
+        nav {
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--sunset-orange), var(--coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--rich-black);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--sunset-orange);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--sunset-orange);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .beta-badge {
+            background: linear-gradient(135deg, var(--warm-yellow), #FFCA5A);
+            color: var(--rich-black);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(255, 184, 48, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 5% 6rem;
+            text-align: center;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--rich-black);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--sunset-orange), var(--coral), var(--bright-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 650px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--sunset-orange), var(--coral));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Tools Grid */
+        .tools-section {
+            padding: 4rem 5% 6rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .section-header h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--rich-black);
+            letter-spacing: -0.02em;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .tool-card:nth-child(1) { animation-delay: 0.1s; }
+        .tool-card:nth-child(2) { animation-delay: 0.2s; }
+        .tool-card:nth-child(3) { animation-delay: 0.3s; }
+        .tool-card:nth-child(4) { animation-delay: 0.4s; }
+        .tool-card:nth-child(5) { animation-delay: 0.5s; }
+        .tool-card:nth-child(6) { animation-delay: 0.6s; }
+        .tool-card:nth-child(7) { animation-delay: 0.7s; }
+        .tool-card:nth-child(8) { animation-delay: 0.8s; }
+        .tool-card:nth-child(9) { animation-delay: 0.9s; }
+        .tool-card:nth-child(10) { animation-delay: 1.0s; }
+        .tool-card:nth-child(11) { animation-delay: 1.1s; }
+        .tool-card:nth-child(12) { animation-delay: 1.2s; }
+        .tool-card:nth-child(13) { animation-delay: 1.3s; }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--sunset-orange), var(--coral));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 20px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .tool-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--sunset-orange), var(--coral));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--rich-black);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--sunset-orange);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: gap 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-link:hover {
+            gap: 0.75rem;
+        }
+
+        .tool-link::after {
+            content: '→';
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--deep-teal), #1A3D4D);
+            color: white;
+            padding: 4rem 5% 2rem;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column h4 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--warm-yellow);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 5rem 5% 4rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <nav>
+        <div class="logo">Flipmo</div>
+        <ul class="nav-links">
+            <li><a href="#tools">Tools</a></li>
+            <li><a href="templates-library.html">Templates</a></li>
+        </ul>
+        <span class="beta-badge">Beta</span>
+    </nav>
+
+    <section class="hero">
+        <h1>
+            Real Estate Tools for <span class="gradient-text">Serious Investors</span>
+        </h1>
+        <p>
+            From AI underwriting to Gulf tower analysis — 15 professional calculators trusted by investors worldwide. 
+            Analyze deals in seconds, compare global markets, and never overpay again.
+        </p>
+        <a href="#tools" class="cta-button">Explore 15 Free Tools</a>
+    </section>
+
+    <section class="tools-section" id="tools">
+        <div class="section-header">
+            <h2>Professional Real Estate Calculators</h2>
+            <p>Everything you need to analyze deals, estimate costs, and maximize profits</p>
+        </div>
+
+        <div class="tools-grid">
+            <div class="tool-card">
+                <div class="tool-icon">📊</div>
+                <h3>Deal Analyzer</h3>
+                <p>Calculate true profit, ROI, and maximum safe offer for fix-and-flip deals. Never overpay again.</p>
+                <a href="flip-deal-analyzer-v2.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🏠</div>
+                <h3>Rental Calculator</h3>
+                <p>Analyze rental property cash flow, cap rate, and long-term returns with precision.</p>
+                <a href="rental-property-calculator.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🔄</div>
+                <h3>BRRRR Calculator</h3>
+                <p>Model buy-rehab-rent-refinance-repeat deals. See your infinite returns before you invest.</p>
+                <a href="brrrr-calculator.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💰</div>
+                <h3>ARV Calculator</h3>
+                <p>Estimate after-repair value using comparable sales. Know what your property will be worth.</p>
+                <a href="arv-calculator.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🔨</div>
+                <h3>Rehab Estimator</h3>
+                <p>Get accurate repair cost estimates by project scope. Budget your flips like a pro.</p>
+                <a href="rehab-estimator.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🏗️</div>
+                <h3>Construction Estimator</h3>
+                <p>Detailed cost breakdowns for major construction projects. Plan big renovations with confidence.</p>
+                <a href="construction-estimator.html" class="tool-link">Open Calculator</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📄</div>
+                <h3>Templates Library</h3>
+                <p>24 professional contracts, agreements, and checklists. Save $2K+ in legal fees.</p>
+                <a href="templates-library.html" class="tool-link">Browse Templates</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🌍</div>
+                <h3>Global Property Comparison</h3>
+                <p>Compare deals from anywhere - Miami vs Dubai vs London. Find the best investment worldwide.</p>
+                <a href="global-property-comparison.html" class="tool-link">Compare Properties</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🔍</div>
+                <h3>Global Deal Finder</h3>
+                <p>Answer 5 questions. Discover the world's best real estate opportunities. AI-powered matching.</p>
+                <a href="global-deal-finder.html" class="tool-link">Find Deals Worldwide</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🧠</div>
+                <h3>AI Underwriting</h3>
+                <p>Analyze any deal in 15 seconds. Get BUY/CAUTION/AVOID decisions with confidence scores.</p>
+                <a href="ai-underwriting.html" class="tool-link">Analyze Instantly</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🏢</div>
+                <h3>Tower Unit Analyzer</h3>
+                <p>Gulf market specialist. Optimize floor selection, payment plans, and ROI for off-plan towers.</p>
+                <a href="tower-unit-analyzer.html" class="tool-link">Analyze Towers</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">📊</div>
+                <h3>Developer Risk Scorecard</h3>
+                <p>12 Gulf developers rated. Track records, delivery history, and trust scores before you invest.</p>
+                <a href="developer-risk-scorecard.html" class="tool-link">Check Developers</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💰</div>
+                <h3>Payment Plan Optimizer</h3>
+                <p>Compare 20/80 vs 40/60 vs 50/50 plans. Find the best structure for off-plan investments.</p>
+                <a href="payment-plan-optimizer.html" class="tool-link">Optimize Plans</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🎯</div>
+                <h3>Exit Strategy Simulator</h3>
+                <p>Sell vs Hold vs Rent vs Refinance. Compare all scenarios and maximize your returns.</p>
+                <a href="exit-strategy-simulator.html" class="tool-link">Simulate Strategies</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">Flipmo</div>
+                <p class="footer-tagline">
+                    Professional real estate investment tools for investors who take their numbers seriously.
+                    Make smarter decisions. Maximize profits.
+                </p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="flip-deal-analyzer-v2.html">Deal Analyzer</a></li>
+                    <li><a href="ai-underwriting.html">AI Underwriting</a></li>
+                    <li><a href="rental-property-calculator.html">Rental Calculator</a></li>
+                    <li><a href="tower-unit-analyzer.html">Tower Unit Analyzer</a></li>
+                    <li><a href="global-deal-finder.html">Global Deal Finder</a></li>
+                    <li><a href="exit-strategy-simulator.html">Exit Strategy Simulator</a></li>
+                    <li><a href="templates-library.html">Templates Library</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul class="footer-links">
+                    <li><a href="/cdn-cgi/l/email-protection#1078757c7c7f50767c79607d7f3e797f">Contact Us</a></li>
+                    <li><a href="#tools">Get Started</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Flipmo. All rights reserved. Built for real estate investors who win.</p>
+       

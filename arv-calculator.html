@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARV Calculator | Flipmo - After Repair Value Estimator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--flipmo-cream) 0%, #FFE5D9 50%, var(--flipmo-cream) 100%);
+            color: var(--flipmo-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .flipmo-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .flipmo-logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .flipmo-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .flipmo-back-btn:hover {
+            background: var(--flipmo-orange);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 5% 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--flipmo-gray);
+            margin-bottom: 2rem;
+        }
+
+        .calculator-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--flipmo-black);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--flipmo-black);
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--flipmo-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .add-comp-btn, .calculate-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--flipmo-bright-teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-comp-btn:hover, .calculate-btn:hover {
+            background: var(--flipmo-teal);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            font-size: 1.1rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .comp-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid #E5E7EB;
+            position: relative;
+        }
+
+        .remove-comp {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #DC2626;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-value {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: var(--flipmo-gray);
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--flipmo-black);
+        }
+
+        @media (max-width: 768px) {
+            .comp-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="flipmo-nav">
+        <a href="index.html" class="flipmo-logo">Flipmo</a>
+        <a href="index.html" class="flipmo-back-btn">← All Tools</a>
+    </nav>
+
+    <div class="hero">
+        <h1><span class="gradient-text">ARV Calculator</span></h1>
+        <p>Estimate After Repair Value using comparable sales in your market</p>
+    </div>
+
+    <div class="calculator-container">
+        <div class="card">
+            <h2>Subject Property</h2>
+            <div class="input-group">
+                <label for="subjectSqft">Square Footage</label>
+                <input type="number" id="subjectSqft" placeholder="1500" value="1500">
+            </div>
+            <div class="input-group">
+                <label for="subjectBeds">Bedrooms</label>
+                <input type="number" id="subjectBeds" placeholder="3" value="3">
+            </div>
+            <div class="input-group">
+                <label for="subjectBaths">Bathrooms</label>
+                <input type="number" id="subjectBaths" placeholder="2" value="2" step="0.5">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Comparable Sales</h2>
+            <p style="color: var(--flipmo-gray); margin-bottom: 1.5rem;">Add 3-5 recently sold properties similar to yours</p>
+            
+            <div id="compsContainer">
+                <!-- Comps will be added here -->
+            </div>
+
+            <button class="add-comp-btn" onclick="addComp()">+ Add Comparable</button>
+            <button class="calculate-btn" onclick="calculateARV()" style="margin-top: 1rem;">Calculate ARV</button>
+        </div>
+
+        <div class="card results" id="results">
+            <h2>ARV Analysis</h2>
+            
+            <div class="highlight-card">
+                <h3>Estimated ARV</h3>
+                <div class="highlight-value" id="estimatedARV">$0</div>
+            </div>
+
+            <div>
+                <div class="result-item">
+                    <span class="result-label">Average Price per Sq Ft</span>
+                    <span class="result-value" id="avgPricePerSqft">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Number of Comps Used</span>
+                    <span class="result-value" id="numComps">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Low Estimate (Conservative)</span>
+                    <span class="result-value" id="lowEstimate">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">High Estimate (Optimistic)</span>
+                    <span class="result-value" id="highEstimate">$0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let compCount = 0;
+
+        function addComp() {
+            compCount++;
+            const compsContainer = document.getElementById('compsContainer');
+            
+            const compDiv = document.createElement('div');
+            compDiv.className = 'comp-item';
+            compDiv.id = `comp-${compCount}`;
+            compDiv.innerHTML = `
+                <button class="remove-comp" onclick="removeComp(${compCount})">×</button>
+                <div class="comp-grid">
+                    <div>
+                        <label style="font-size: 0.85rem;">Sale Price</label>
+                        <input type="number" id="price-${compCount}" placeholder="250000" style="font-size: 0.9rem; padding: 0.5rem;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem;">Sq Ft</label>
+                        <input type="number" id="sqft-${compCount}" placeholder="1600" style="font-size: 0.9rem; padding: 0.5rem;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem;">Beds</label>
+                        <input type="number" id="beds-${compCount}" placeholder="3" style="font-size: 0.9rem; padding: 0.5rem;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem;">Baths</label>
+                        <input type="number" id="baths-${compCount}" placeholder="2" step="0.5" style="font-size: 0.9rem; padding: 0.5rem;">
+                    </div>
+                </div>
+            `;
+            
+            compsContainer.appendChild(compDiv);
+        }
+
+        function removeComp(id) {
+            const comp = document.getElementById(`comp-${id}`);
+            if (comp) comp.remove();
+        }
+
+        function calculateARV() {
+            const subjectSqft = parseFloat(document.getElementById('subjectSqft').value) || 0;
+            
+            if (subjectSqft === 0) {
+                alert('Please enter subject property square footage');
+                return;
+            }
+
+            // Collect all comp data
+            const comps = [];
+            for (let i = 1; i <= compCount; i++) {
+                const priceInput = document.getElementById(`price-${i}`);
+                const sqftInput = document.getElementById(`sqft-${i}`);
+                
+                if (priceInput && sqftInput) {
+                    const price = parseFloat(priceInput.value);
+                    const sqft = parseFloat(sqftInput.value);
+                    
+                    if (price > 0 && sqft > 0) {
+                        comps.push({
+                            price: price,
+                            sqft: sqft,
+                            pricePerSqft: price / sqft
+                        });
+                    }
+                }
+            }
+
+            if (comps.length === 0) {
+                alert('Please add at least one comparable sale');
+                return;
+            }
+
+            // Calculate average price per sq ft
+            const totalPricePerSqft = comps.reduce((sum, comp) => sum + comp.pricePerSqft, 0);
+            const avgPricePerSqft = totalPricePerSqft / comps.length;
+
+            // Calculate ARV
+            const estimatedARV = avgPricePerSqft * subjectSqft;
+
+            // Calculate conservative and optimistic estimates (±10%)
+            const lowEstimate = estimatedARV * 0.90;
+            const highEstimate = estimatedARV * 1.10;
+
+            // Update UI
+            document.getElementById('estimatedARV').textContent = formatCurrency(estimatedARV);
+            document.getElementById('avgPricePerSqft').textContent = formatCurrency(avgPricePerSqft);
+            document.getElementById('numComps').textContent = comps.length;
+            document.getElementById('lowEstimate').textContent = formatCurrency(lowEstimate);
+            document.getElementById('highEstimate').textContent = formatCurrency(highEstimate);
+
+            // Show results
+            document.getElementById('results').classList.add('active');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Add 3 default comps
+        addComp();
+        addComp();
+        addComp();
+    </script>
+</body>
+</html>

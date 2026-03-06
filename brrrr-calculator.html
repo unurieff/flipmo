@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRRRR Calculator | Flipmo - Buy Rehab Rent Refinance Repeat Strategy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--flipmo-cream) 0%, #FFE5D9 50%, var(--flipmo-cream) 100%);
+            color: var(--flipmo-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .flipmo-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .flipmo-logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .flipmo-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .flipmo-back-btn:hover {
+            background: var(--flipmo-orange);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 5% 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--flipmo-gray);
+            margin-bottom: 2rem;
+        }
+
+        .calculator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--flipmo-black);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--flipmo-black);
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--flipmo-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3);
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: var(--flipmo-gray);
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--flipmo-black);
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .highlight-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .info-box {
+            background: var(--flipmo-cream);
+            border-left: 4px solid var(--flipmo-orange);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 8px;
+        }
+
+        .info-box p {
+            font-size: 0.9rem;
+            color: var(--flipmo-gray);
+            margin: 0;
+        }
+
+        @media (max-width: 968px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="flipmo-nav">
+        <a href="index.html" class="flipmo-logo">Flipmo</a>
+        <a href="index.html" class="flipmo-back-btn">← All Tools</a>
+    </nav>
+
+    <div class="hero">
+        <h1><span class="gradient-text">BRRRR Calculator</span></h1>
+        <p>Buy • Rehab • Rent • Refinance • Repeat — Model your infinite return strategy</p>
+    </div>
+
+    <div class="calculator-container">
+        <div class="calculator-grid">
+            <div class="card">
+                <h2>Purchase & Rehab</h2>
+                <div class="input-group">
+                    <label for="purchasePrice">Purchase Price</label>
+                    <input type="number" id="purchasePrice" placeholder="150000" value="150000">
+                </div>
+                <div class="input-group">
+                    <label for="rehabCost">Rehab Cost</label>
+                    <input type="number" id="rehabCost" placeholder="40000" value="40000">
+                </div>
+                <div class="input-group">
+                    <label for="closingCosts">Closing Costs (buy)</label>
+                    <input type="number" id="closingCosts" placeholder="3000" value="3000">
+                </div>
+                <div class="input-group">
+                    <label for="holdingCosts">Holding Costs (during rehab)</label>
+                    <input type="number" id="holdingCosts" placeholder="2000" value="2000">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Refinance Details</h2>
+                <div class="input-group">
+                    <label for="arv">After Repair Value (ARV)</label>
+                    <input type="number" id="arv" placeholder="250000" value="250000">
+                </div>
+                <div class="input-group">
+                    <label for="refinanceLTV">Refinance LTV (%)</label>
+                    <input type="number" id="refinanceLTV" placeholder="75" value="75">
+                </div>
+                <div class="input-group">
+                    <label for="refinanceClosing">Refinance Closing Costs</label>
+                    <input type="number" id="refinanceClosing" placeholder="3000" value="3000">
+                </div>
+                <div class="input-group">
+                    <label for="monthlyRent">Monthly Rent</label>
+                    <input type="number" id="monthlyRent" placeholder="1800" value="1800">
+                </div>
+                <div class="input-group">
+                    <label for="monthlyExpenses">Monthly Expenses</label>
+                    <input type="number" id="monthlyExpenses" placeholder="600" value="600">
+                </div>
+                <button class="calculate-btn" onclick="calculateBRRRR()">Calculate BRRRR</button>
+            </div>
+        </div>
+
+        <div class="card results" id="results" style="margin-top: 2rem;">
+            <h2>BRRRR Analysis</h2>
+            
+            <div class="highlight-card">
+                <h3>Cash Left in Deal</h3>
+                <div class="highlight-value" id="cashLeftIn">$0</div>
+                <div id="cashLeftStatus"></div>
+            </div>
+
+            <div>
+                <div class="result-item">
+                    <span class="result-label">Total Cash Invested</span>
+                    <span class="result-value" id="totalInvested">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Cash Pulled Out</span>
+                    <span class="result-value" id="cashPulled">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Refinance Loan Amount</span>
+                    <span class="result-value" id="refinanceLoan">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Monthly Cash Flow</span>
+                    <span class="result-value" id="monthlyCashFlow">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Annual Cash Flow</span>
+                    <span class="result-value" id="annualCashFlow">$0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Return on Investment (ROI)</span>
+                    <span class="result-value" id="roi">0%</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>Infinite Return:</strong> If your cash left in deal is $0 or negative, you've achieved an infinite return — you've recycled 100% of your capital!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBRRRR() {
+            // Get inputs
+            const purchasePrice = parseFloat(document.getElementById('purchasePrice').value) || 0;
+            const rehabCost = parseFloat(document.getElementById('rehabCost').value) || 0;
+            const closingCosts = parseFloat(document.getElementById('closingCosts').value) || 0;
+            const holdingCosts = parseFloat(document.getElementById('holdingCosts').value) || 0;
+            const arv = parseFloat(document.getElementById('arv').value) || 0;
+            const refinanceLTV = parseFloat(document.getElementById('refinanceLTV').value) || 0;
+            const refinanceClosing = parseFloat(document.getElementById('refinanceClosing').value) || 0;
+            const monthlyRent = parseFloat(document.getElementById('monthlyRent').value) || 0;
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+
+            // Calculate total invested
+            const totalInvested = purchasePrice + rehabCost + closingCosts + holdingCosts;
+
+            // Calculate refinance loan amount
+            const refinanceLoan = arv * (refinanceLTV / 100);
+
+            // Calculate cash pulled out (loan amount minus refinance costs)
+            const cashPulled = refinanceLoan - refinanceClosing;
+
+            // Calculate cash left in deal
+            const cashLeftIn = totalInvested - cashPulled;
+
+            // Calculate cash flow
+            const monthlyCashFlow = monthlyRent - monthlyExpenses;
+            const annualCashFlow = monthlyCashFlow * 12;
+
+            // Calculate ROI
+            let roi = 0;
+            if (cashLeftIn > 0) {
+                roi = (annualCashFlow / cashLeftIn) * 100;
+            } else {
+                roi = Infinity;
+            }
+
+            // Update UI
+            document.getElementById('totalInvested').textContent = formatCurrency(totalInvested);
+            document.getElementById('refinanceLoan').textContent = formatCurrency(refinanceLoan);
+            document.getElementById('cashPulled').textContent = formatCurrency(cashPulled);
+            document.getElementById('cashLeftIn').textContent = formatCurrency(cashLeftIn);
+            document.getElementById('monthlyCashFlow').textContent = formatCurrency(monthlyCashFlow);
+            document.getElementById('annualCashFlow').textContent = formatCurrency(annualCashFlow);
+            
+            if (roi === Infinity || cashLeftIn <= 0) {
+                document.getElementById('roi').textContent = '∞ (Infinite!)';
+            } else {
+                document.getElementById('roi').textContent = roi.toFixed(2) + '%';
+            }
+
+            // Status
+            const statusEl = document.getElementById('cashLeftStatus');
+            if (cashLeftIn <= 0) {
+                statusEl.textContent = '🎉 Infinite Return! You pulled out 100%+ of your capital!';
+            } else if (cashLeftIn < totalInvested * 0.2) {
+                statusEl.textContent = '✓ Great deal! You recycled most of your capital.';
+            } else {
+                statusEl.textContent = 'Capital still invested in property';
+            }
+
+            // Show results
+            document.getElementById('results').classList.add('active');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Calculate on load
+        calculateBRRRR();
+    </script>
+</body>
+</html>

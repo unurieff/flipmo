@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Plan Optimizer | Flipmo - Off-Plan Investment Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0F1419;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* FLIPMO PREMIUM COLORS */
+        .hero {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 50%, #2A9D8F 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255, 107, 53, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(42, 157, 143, 0.3) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFB830;
+        }
+        
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .section-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #FF6B35 0%, #2A9D8F 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 32px;
+            font-family: 'Clash Display', sans-serif;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        
+        .plan-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 107, 53, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        
+        .plan-card.winner {
+            border: 2px solid #FF6B35;
+            background: rgba(255, 107, 53, 0.08);
+            position: relative;
+        }
+        
+        .winner-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .plan-name {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #FF6B35;
+        }
+        
+        .metric {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 4px;
+        }
+        
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .metric-value.positive {
+            color: #2A9D8F;
+        }
+        
+        .metric-value.negative {
+            color: #FF6B35;
+        }
+        
+        .score {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(42, 157, 143, 0.15);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+            border-radius: 8px;
+            color: #2A9D8F;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .recommendation {
+            background: rgba(255, 107, 53, 0.08);
+            border-left: 4px solid #FF6B35;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 32px;
+        }
+        
+        .recommendation h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 22px;
+            color: #FF6B35;
+            margin-bottom: 12px;
+        }
+        
+        .recommendation p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .export-btn {
+            background: rgba(42, 157, 143, 0.15);
+            border: 1px solid rgba(42, 157, 143, 0.3);
+            color: #2A9D8F;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+            margin-top: 24px;
+        }
+        
+        .export-btn:hover {
+            background: rgba(42, 157, 143, 0.25);
+            border-color: rgba(42, 157, 143, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .currency-selector select {
+            width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .hero p { font-size: 18px; }
+            .card { padding: 28px; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>💰 Payment Plan Optimizer</h1>
+        <p>Compare off-plan payment structures. Maximize cash flow. Make smarter decisions.</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2 class="section-title">Property Details</h2>
+            
+            <div class="currency-selector">
+                <label class="input-label">Currency:</label>
+                <select id="currency">
+                    <option value="AED" data-symbol="AED" data-rate="1">🇦🇪 UAE Dirham (AED)</option>
+                    <option value="SAR" data-symbol="SAR" data-rate="0.98">🇸🇦 Saudi Riyal (SAR)</option>
+                    <option value="QAR" data-symbol="QAR" data-rate="1.01">🇶🇦 Qatari Riyal (QAR)</option>
+                    <option value="KWD" data-symbol="KWD" data-rate="0.08">🇰🇼 Kuwaiti Dinar (KWD)</option>
+                    <option value="BHD" data-symbol="BHD" data-rate="0.10">🇧🇭 Bahraini Dinar (BHD)</option>
+                    <option value="OMR" data-symbol="OMR" data-rate="0.10">🇴🇲 Omani Rial (OMR)</option>
+                    <option value="USD" data-symbol="$" data-rate="0.27">🇺🇸 US Dollar (USD)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Property Price</label>
+                <input type="number" id="propertyPrice" value="2000000" placeholder="e.g., 2000000">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Construction Period (Years)</label>
+                <input type="number" id="constructionYears" value="3" placeholder="e.g., 3" step="0.5">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Available Capital</label>
+                <input type="number" id="availableCapital" value="800000" placeholder="e.g., 800000">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Alternative Investment Return (%)</label>
+                <input type="number" id="alternativeReturn" value="8" placeholder="e.g., 8" step="0.1">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculatePlans()">🔍 Compare Payment Plans</button>
+        </div>
+
+        <div id="results" style="display:none;">
+            <div class="card">
+                <h2 class="section-title">Payment Plan Comparison</h2>
+                <div class="results-grid" id="resultsGrid"></div>
+                <div class="recommendation" id="recommendation"></div>
+                <button class="export-btn" onclick="exportPDF()">📄 Export Analysis as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCurrency = 'AED';
+        let currentSymbol = 'AED';
+        let calculationResults = null;
+
+        document.getElementById('currency').addEventListener('change', function(e) {
+            currentCurrency = e.target.value;
+            currentSymbol = e.target.options[e.target.selectedIndex].dataset.symbol;
+            if (calculationResults) {
+                displayResults(calculationResults);
+            }
+        });
+
+        function formatCurrency(amount) {
+            return `${currentSymbol} ${amount.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+        }
+
+        function calculatePlans() {
+            const price = parseFloat(document.getElementById('propertyPrice').value);
+            const years = parseFloat(document.getElementById('constructionYears').value);
+            const capital = parseFloat(document.getElementById('availableCapital').value);
+            const altReturn = parseFloat(document.getElementById('alternativeReturn').value) / 100;
+            
+            const plans = [
+                { name: '20/80', downPayment: 0.20, duringConstruction: 0.00, atHandover: 0.80 },
+                { name: '30/70', downPayment: 0.10, duringConstruction: 0.20, atHandover: 0.70 },
+                { name: '40/60', downPayment: 0.10, duringConstruction: 0.30, atHandover: 0.60 },
+                { name: '50/50', downPayment: 0.10, duringConstruction: 0.40, atHandover: 0.50 }
+            ];
+            
+            const results = plans.map(plan => {
+                const downAmount = price * plan.downPayment;
+                const duringAmount = price * plan.duringConstruction;
+                const handoverAmount = price * plan.atHandover;
+                
+                const totalPaidEarly = downAmount + duringAmount;
+                const opportunityCost = totalPaidEarly * altReturn * years;
+                const cashRemaining = capital - totalPaidEarly;
+                const monthlyPayment = duringAmount / (years * 12);
+                
+                let score = 0;
+                if (cashRemaining > 0) score += 30;
+                if (opportunityCost < price * 0.15) score += 30;
+                if (handoverAmount < price * 0.70) score += 20;
+                if (monthlyPayment < capital * 0.02) score += 20;
+                
+                return {
+                    ...plan,
+                    downAmount,
+                    duringAmount,
+                    handoverAmount,
+                    totalPaidEarly,
+                    opportunityCost,
+                    cashRemaining,
+                    monthlyPayment,
+                    score,
+                    feasible: cashRemaining >= 0
+                };
+            });
+            
+            calculationResults = results;
+            displayResults(results);
+        }
+        
+        function displayResults(results) {
+            const maxScore = Math.max(...results.map(r => r.score));
+            const winner = results.find(r => r.score === maxScore);
+            
+            const html = results.map(plan => `
+                <div class="plan-card ${plan.score === maxScore ? 'winner' : ''}">
+                    ${plan.score === maxScore ? '<div class="winner-badge">Best Choice</div>' : ''}
+                    <div class="plan-name">${plan.name} Plan</div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">Down Payment</div>
+                        <div class="metric-value">${formatCurrency(plan.downAmount)}</div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">During Construction</div>
+                        <div class="metric-value">${formatCurrency(plan.duringAmount)}</div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">At Handover</div>
+                        <div class="metric-value">${formatCurrency(plan.handoverAmount)}</div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">Monthly Payment</div>
+                        <div class="metric-value">${formatCurrency(plan.monthlyPayment)}</div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">Opportunity Cost</div>
+                        <div class="metric-value negative">${formatCurrency(plan.opportunityCost)}</div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">Cash Remaining</div>
+                        <div class="metric-value ${plan.cashRemaining > 0 ? 'positive' : 'negative'}">
+                            ${formatCurrency(plan.cashRemaining)}
+                        </div>
+                    </div>
+                    
+                    <div class="metric">
+                        <div class="metric-label">Overall Score</div>
+                        <div class="score">${plan.score}/100</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('resultsGrid').innerHTML = html;
+            
+            const recommendation = `
+                <h3>💡 Recommendation: ${winner.name} Plan</h3>
+                <p><strong>Why this works:</strong> This payment structure offers the best balance between preserving your capital (${formatCurrency(winner.cashRemaining)} remaining) and minimizing opportunity cost (${formatCurrency(winner.opportunityCost)}). Your monthly payments of ${formatCurrency(winner.monthlyPayment)} are sustainable, and you'll pay ${formatCurrency(winner.handoverAmount)} at handover, giving you maximum flexibility during construction.</p>
+            `;
+            
+            document.getElementById('recommendation').innerHTML = recommendation;
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.text('Payment Plan Analysis Report', 20, 20);
+            
+            doc.setFontSize(12);
+            doc.text(`Currency: ${currentCurrency}`, 20, 35);
+            doc.text(`Property Price: ${formatCurrency(parseFloat(document.getElementById('propertyPrice').value))}`, 20, 45);
+            doc.text(`Construction Period: ${document.getElementById('constructionYears').value} years`, 20, 55);
+            
+            let y = 70;
+            calculationResults.forEach((plan, idx) => {
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFontSize(14);
+                doc.text(`${plan.name} Plan`, 20, y);
+                y += 8;
+                
+                doc.setFontSize(10);
+                doc.text(`Down Payment: ${formatCurrency(plan.downAmount)}`, 25, y);
+                y += 6;
+                doc.text(`During Construction: ${formatCurrency(plan.duringAmount)}`, 25, y);
+                y += 6;
+                doc.text(`At Handover: ${formatCurrency(plan.handoverAmount)}`, 25, y);
+                y += 6;
+                doc.text(`Opportunity Cost: ${formatCurrency(plan.opportunityCost)}`, 25, y);
+                y += 6;
+                doc.text(`Cash Remaining: ${formatCurrency(plan.cashRemaining)}`, 25, y);
+                y += 6;
+                doc.text(`Score: ${plan.score}/100`, 25, y);
+                y += 12;
+            });
+            
+            const maxScore = Math.max(...calculationResults.map(r => r.score));
+            const winner = calculationResults.find(r => r.score === maxScore);
+            
+            doc.setFontSize(12);
+            doc.text(`Recommended Plan: ${winner.name}`, 20, y);
+            
+            doc.save('payment-plan-analysis.pdf');
+        }
+    </script>
+</body>
+</html>

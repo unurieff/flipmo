@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Estimator | Flipmo - Detailed Project Cost Breakdown</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #FFF8F0;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--flipmo-teal) 0%, var(--flipmo-bright-teal) 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #059669;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #047857;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 32px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--flipmo-orange);
+        }
+
+        .sqft-input {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .sqft-label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 2px solid #fb923c;
+            color: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 24px;
+            box-shadow: 0 4px 6px rgba(251, 146, 60, 0.1);
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #9a3412;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ea580c;
+            margin-bottom: 12px;
+        }
+
+        .summary-breakdown {
+            padding-top: 12px;
+            border-top: 1px solid rgba(251, 146, 60, 0.3);
+            font-size: 12px;
+            color: #7c2d12;
+        }
+
+        .summary-breakdown > div {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .summary-breakdown strong {
+            color: #9a3412;
+            font-weight: 600;
+        }
+
+        /* Categories */
+        .categories {
+            display: grid;
+            gap: 24px;
+        }
+
+        .category-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .category-header:hover {
+            opacity: 0.8;
+        }
+
+        .category-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            font-size: 24px;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .category-toggle {
+            font-size: 20px;
+            color: #6b7280;
+            transition: transform 0.3s;
+        }
+
+        .category-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .category-total {
+            font-size: 20px;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .category-items {
+            display: grid;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .category-items.collapsed {
+            display: none;
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 1fr 120px 120px 120px;
+            gap: 16px;
+            align-items: center;
+            padding: 12px;
+            background-color: #f9fafb;
+            border-radius: 6px;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .item-input {
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .item-cost {
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: var(--flipmo-orange);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: help;
+            margin-left: 6px;
+            line-height: 16px;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1f2937;
+            color: white;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -110px;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        .disclaimer-section {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            margin-top: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .disclaimer-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .disclaimer-list {
+            list-style: none;
+            font-size: 12px;
+            color: #78350f;
+            line-height: 1.5;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 8px;
+        }
+
+        .disclaimer-list li {
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .disclaimer-list li:before {
+            content: "•";
+            position: absolute;
+            left: 6px;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+
+        .quality-toggle {
+            display: flex;
+            gap: 4px;
+            background-color: #e5e7eb;
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        .quality-option {
+            flex: 1;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quality-option.active {
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .quality-option.budget.active {
+            color: #059669;
+        }
+
+        .quality-option.mid.active {
+            color: var(--flipmo-orange);
+        }
+
+        .quality-option.premium.active {
+            color: #7c3aed;
+        }
+
+        /* Export Button */
+        .export-section {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-panel {
+                position: static;
+            }
+
+            .item-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .item-input {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🏗️ Construction Estimator</h1>
+            <div class="header-actions">
+                <a href="index.html" class="btn-secondary">← Back to Calculator</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Construction Cost Estimator</h1>
+            <p class="page-subtitle">Get accurate renovation cost estimates with regional and material quality adjustments</p>
+        </div>
+
+        <div class="layout">
+            <!-- Main Content -->
+            <div class="categories" id="categoriesContainer">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <h3 class="settings-title">Project Settings</h3>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Property Size</label>
+                    <div class="sqft-input">
+                        <input type="number" id="sqftInput" value="1500" min="500" max="10000">
+                        <span class="sqft-label">sq ft</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Region</label>
+                    <select id="regionSelect">
+                        <option value="1.0">National Average</option>
+                        <option value="1.3">San Francisco Bay Area</option>
+                        <option value="1.25">Los Angeles/Orange County</option>
+                        <option value="1.2">New York City Metro</option>
+                        <option value="1.15">Seattle/Portland</option>
+                        <option value="1.1">Boston/DC Metro</option>
+                        <option value="1.05">Chicago/Denver</option>
+                        <option value="0.95">Phoenix/Las Vegas</option>
+                        <option value="0.9">Dallas/Houston/Austin</option>
+                        <option value="0.85">Atlanta/Charlotte</option>
+                        <option value="0.8">Midwest/South (Low Cost)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Default Quality</label>
+                    <select id="defaultQuality">
+                        <option value="budget">Budget</option>
+                        <option value="mid" selected>Mid-Grade</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-label">Total Estimated Cost</div>
+                    <div class="summary-value" id="totalCost">$0</div>
+                    <div class="summary-breakdown">
+                        <div>
+                            <span>Materials & Fixtures:</span>
+                            <strong id="materialCost">$0</strong>
+                        </div>
+                        <div>
+                            <span>Installation & Labor:</span>
+                            <strong id="laborCost">$0</strong>
+                        </div>
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(251, 146, 60, 0.2);">
+                            <span>Cost per sq ft:</span>
+                            <strong id="costPerSqft">$0</strong>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px; padding: 8px; background: rgba(251, 146, 60, 0.1); border-radius: 6px; font-size: 11px; color: #9a3412; line-height: 1.4;">
+                        💡 Estimates only • Get 3+ bids • Add 15-20% buffer
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="exportEstimate()">
+                    📄 Export Estimate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cost database (per unit, national average)
+        // Costs include both materials and typical labor
+        const costDatabase = {
+            kitchen: {
+                name: 'Kitchen Remodel',
+                icon: '🍳',
+                laborRatio: 0.35, // 35% labor, 65% materials
+                items: [
+                    { name: 'Cabinets', unit: 'linear ft', budget: 150, mid: 300, premium: 600, default: 20, 
+                      tooltip: 'Includes cabinet boxes and professional installation' },
+                    { name: 'Countertops', unit: 'sq ft', budget: 40, mid: 75, premium: 150, default: 40,
+                      tooltip: 'Material + template, fabrication, and installation' },
+                    { name: 'Appliances', unit: 'set', budget: 2000, mid: 4000, premium: 8000, default: 1,
+                      tooltip: 'Fridge, stove, dishwasher, microwave + installation' },
+                    { name: 'Sink & Faucet', unit: 'set', budget: 300, mid: 600, premium: 1200, default: 1,
+                      tooltip: 'Sink, faucet, and plumbing installation' },
+                    { name: 'Backsplash', unit: 'sq ft', budget: 15, mid: 25, premium: 50, default: 30,
+                      tooltip: 'Tile material + professional installation' },
+                    { name: 'Flooring', unit: 'sq ft', budget: 8, mid: 15, premium: 30, default: 150,
+                      tooltip: 'Flooring material + installation and finishing' },
+                    { name: 'Lighting', unit: 'fixtures', budget: 200, mid: 400, premium: 800, default: 3,
+                      tooltip: 'Light fixtures + electrical installation' }
+                ]
+            },
+            bathrooms: {
+                name: 'Bathroom Remodel',
+                icon: '🚿',
+                laborRatio: 0.45, // 45% labor, 55% materials
+                items: [
+                    { name: 'Vanity & Sink', unit: 'set', budget: 400, mid: 800, premium: 2000, default: 1,
+                      tooltip: 'Vanity cabinet, sink, faucet + installation' },
+                    { name: 'Toilet', unit: 'unit', budget: 200, mid: 400, premium: 800, default: 1,
+                      tooltip: 'Toilet + plumbing installation' },
+                    { name: 'Shower/Tub', unit: 'set', budget: 800, mid: 2000, premium: 5000, default: 1,
+                      tooltip: 'Tub/shower unit + plumbing and tile surround' },
+                    { name: 'Tile Work', unit: 'sq ft', budget: 12, mid: 20, premium: 40, default: 100,
+                      tooltip: 'Tile material + professional installation' },
+                    { name: 'Fixtures & Hardware', unit: 'set', budget: 300, mid: 600, premium: 1500, default: 1,
+                      tooltip: 'Towel bars, toilet paper holder, etc. + install' },
+                    { name: 'Flooring', unit: 'sq ft', budget: 10, mid: 18, premium: 35, default: 50,
+                      tooltip: 'Bathroom flooring + installation' },
+                    { name: 'Lighting & Fan', unit: 'fixtures', budget: 150, mid: 300, premium: 600, default: 2,
+                      tooltip: 'Light fixtures, exhaust fan + electrical install' }
+                ]
+            },
+            flooring: {
+                name: 'Flooring',
+                icon: '🪵',
+                laborRatio: 0.30, // 30% labor, 70% materials
+                items: [
+                    { name: 'Carpet', unit: 'sq ft', budget: 3, mid: 6, premium: 12, default: 0,
+                      tooltip: 'Carpet + pad + installation' },
+                    { name: 'Vinyl/Laminate', unit: 'sq ft', budget: 4, mid: 7, premium: 12, default: 0,
+                      tooltip: 'Vinyl or laminate planks + installation' },
+                    { name: 'Hardwood', unit: 'sq ft', budget: 8, mid: 12, premium: 20, default: 500,
+                      tooltip: 'Hardwood flooring + installation + finishing' },
+                    { name: 'Tile', unit: 'sq ft', budget: 10, mid: 15, premium: 30, default: 0,
+                      tooltip: 'Tile + installation + grout' }
+                ]
+            },
+            painting: {
+                name: 'Interior Painting',
+                icon: '🎨',
+                laborRatio: 0.70, // 70% labor, 30% materials (paint is cheap, labor isn't!)
+                items: [
+                    { name: 'Walls & Ceilings', unit: 'sq ft', budget: 2, mid: 3.5, premium: 6, default: 1500,
+                      tooltip: 'Paint + prep work + 2 coats application' },
+                    { name: 'Trim & Doors', unit: 'linear ft', budget: 3, mid: 5, premium: 8, default: 200,
+                      tooltip: 'Trim painting + prep and masking' },
+                    { name: 'Cabinet Painting', unit: 'linear ft', budget: 40, mid: 60, premium: 100, default: 0,
+                      tooltip: 'Cabinet prep, prime, paint + hardware reinstall' }
+                ]
+            },
+            exterior: {
+                name: 'Exterior Work',
+                icon: '🏠',
+                laborRatio: 0.40, // 40% labor, 60% materials
+                items: [
+                    { name: 'Siding', unit: 'sq ft', budget: 8, mid: 12, premium: 20, default: 0,
+                      tooltip: 'Siding material + installation' },
+                    { name: 'Roof Replacement', unit: 'sq ft', budget: 5, mid: 8, premium: 15, default: 0,
+                      tooltip: 'Shingles + underlayment + installation + disposal' },
+                    { name: 'Windows', unit: 'window', budget: 400, mid: 700, premium: 1200, default: 0,
+                      tooltip: 'Window unit + installation + trim' },
+                    { name: 'Doors', unit: 'door', budget: 300, mid: 600, premium: 1500, default: 0,
+                      tooltip: 'Door + frame + hardware + installation' },
+                    { name: 'Gutters', unit: 'linear ft', budget: 8, mid: 12, premium: 20, default: 0,
+                      tooltip: 'Gutter material + installation + downspouts' },
+                    { name: 'Paint Exterior', unit: 'sq ft', budget: 2.5, mid: 4, premium: 7, default: 0,
+                      tooltip: 'Exterior paint + prep work + application' }
+                ]
+            },
+            systems: {
+                name: 'HVAC & Systems',
+                icon: '⚡',
+                laborRatio: 0.50, // 50% labor, 50% materials
+                items: [
+                    { name: 'HVAC Replacement', unit: 'system', budget: 4000, mid: 6500, premium: 10000, default: 0,
+                      tooltip: 'Complete HVAC system + installation + disposal of old unit' },
+                    { name: 'Water Heater', unit: 'unit', budget: 800, mid: 1200, premium: 2000, default: 0,
+                      tooltip: 'Water heater + installation + code compliance' },
+                    { name: 'Electrical Upgrade', unit: 'panel', budget: 1500, mid: 2500, premium: 4000, default: 0,
+                      tooltip: 'Electrical panel upgrade + permits + inspection' },
+                    { name: 'Plumbing Rough-in', unit: 'bathroom', budget: 2000, mid: 3500, premium: 6000, default: 0,
+                      tooltip: 'Complete plumbing for new bathroom + inspection' }
+                ]
+            },
+            landscaping: {
+                name: 'Landscaping & Curb Appeal',
+                icon: '🌳',
+                laborRatio: 0.55, // 55% labor, 45% materials
+                items: [
+                    { name: 'Basic Landscaping', unit: 'sq ft', budget: 2, mid: 4, premium: 8, default: 0,
+                      tooltip: 'Sod/plants + soil prep + installation' },
+                    { name: 'Driveway/Walkways', unit: 'sq ft', budget: 8, mid: 15, premium: 25, default: 0,
+                      tooltip: 'Concrete/pavers + excavation + installation' },
+                    { name: 'Fence', unit: 'linear ft', budget: 20, mid: 35, premium: 60, default: 0,
+                      tooltip: 'Fence material + posts + installation' },
+                    { name: 'Deck/Patio', unit: 'sq ft', budget: 25, mid: 45, premium: 80, default: 0,
+                      tooltip: 'Deck/patio material + framing + installation' }
+                ]
+            }
+        };
+
+        let estimateData = {};
+        let region = 1.0;
+        let sqft = 1500;
+
+        function formatCurrency(value) {
+            return '$' + Math.round(value).toLocaleString('en-US');
+        }
+
+        function calculateItemCost(item, quantity, quality) {
+            const baseCost = item[quality] * quantity;
+            return baseCost * region;
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            const defaultQuality = document.getElementById('defaultQuality').value;
+
+            container.innerHTML = Object.keys(costDatabase).map(categoryKey => {
+                const category = costDatabase[categoryKey];
+                const isExpanded = estimateData[categoryKey]?.expanded !== false;
+                
+                // Initialize category data if doesn't exist
+                if (!estimateData[categoryKey]) {
+                    estimateData[categoryKey] = {
+                        expanded: true,
+                        items: {}
+                    };
+                }
+
+                // Calculate category total
+                let categoryTotal = 0;
+                category.items.forEach(item => {
+                    const itemKey = item.name.replace(/\s+/g, '_');
+                    if (!estimateData[categoryKey].items[itemKey]) {
+                        estimateData[categoryKey].items[itemKey] = {
+                            quantity: item.default,
+                            quality: defaultQuality
+                        };
+                    }
+                    const itemData = estimateData[categoryKey].items[itemKey];
+                    categoryTotal += calculateItemCost(item, itemData.quantity, itemData.quality);
+                });
+
+                return `
+                    <div class="category-card">
+                        <div class="category-header" onclick="toggleCategory('${categoryKey}')">
+                            <div class="category-title-group">
+                                <span class="category-icon">${category.icon}</span>
+                                <span class="category-name">${category.name}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <span class="category-total">${formatCurrency(categoryTotal)}</span>
+                                <span class="category-toggle ${isExpanded ? 'expanded' : ''}">▼</span>
+                            </div>
+                        </div>
+                        <div class="category-items ${isExpanded ? '' : 'collapsed'}">
+                            ${category.items.map(item => {
+                                const itemKey = item.name.replace(/\s+/g, '_');
+                                const itemData = estimateData[categoryKey].items[itemKey];
+                                const cost = calculateItemCost(item, itemData.quantity, itemData.quality);
+                                
+                                return `
+                                    <div class="item-row">
+                                        <div class="item-name">
+                                            ${item.name}
+                                            ${item.tooltip ? `
+                                                <span class="tooltip-container">
+                                                    <span class="info-icon">i</span>
+                                                    <span class="tooltip-text">${item.tooltip}</span>
+                                                </span>
+                                            ` : ''}
+                                            <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">
+                                                ${formatCurrency(item[itemData.quality])}/${item.unit} × ${region.toFixed(2)}x region
+                                            </div>
+                                        </div>
+                                        <input type="number" 
+                                               class="item-input" 
+                                               value="${itemData.quantity}" 
+                                               min="0" 
+                                               step="0.5"
+                                               placeholder="Qty"
+                                               onchange="updateQuantity('${categoryKey}', '${itemKey}', this.value)">
+                                        <div class="quality-toggle">
+                                            <div class="quality-option budget ${itemData.quality === 'budget' ? 'active' : ''}" 
+                                                 onclick="updateQuality('${categoryKey}', '${itemKey}', 'budget')"
+                                                 title="Budget: Contractor-grade materials">B</div>
+                                            <div class="quality-option mid ${itemData.quality === 'mid' ? 'active' : ''}" 
+                                                 onclick="updateQuality('${categoryKey}', '${itemKey}', 'mid')"
+                                                 title="Mid: Standard residential quality">M</div>
+                                            <div class="quality-option premium ${itemData.quality === 'premium' ? 'active' : ''}" 
+                                                 onclick="updateQuality('${categoryKey}', '${itemKey}', 'premium')"
+                                                 title="Premium: High-end custom">P</div>
+                                        </div>
+                                        <div class="item-cost">${formatCurrency(cost)}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateTotals();
+        }
+
+        function toggleCategory(categoryKey) {
+            estimateData[categoryKey].expanded = !estimateData[categoryKey].expanded;
+            renderCategories();
+        }
+
+        function updateQuantity(categoryKey, itemKey, value) {
+            estimateData[categoryKey].items[itemKey].quantity = parseFloat(value) || 0;
+            renderCategories();
+        }
+
+        function updateQuality(categoryKey, itemKey, quality) {
+            estimateData[categoryKey].items[itemKey].quality = quality;
+            renderCategories();
+        }
+
+        function updateTotals() {
+            let totalCost = 0;
+            let laborCost = 0;
+            let materialCost = 0;
+
+            Object.keys(costDatabase).forEach(categoryKey => {
+                const category = costDatabase[categoryKey];
+                const laborRatio = category.laborRatio || 0.40; // Default to 40% if not specified
+                
+                category.items.forEach(item => {
+                    const itemKey = item.name.replace(/\s+/g, '_');
+                    const itemData = estimateData[categoryKey].items[itemKey];
+                    const cost = calculateItemCost(item, itemData.quantity, itemData.quality);
+                    totalCost += cost;
+                    
+                    // Use category-specific labor ratios
+                    laborCost += cost * laborRatio;
+                    materialCost += cost * (1 - laborRatio);
+                });
+            });
+
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('costPerSqft').textContent = formatCurrency(totalCost / sqft);
+            document.getElementById('laborCost').textContent = formatCurrency(laborCost);
+            document.getElementById('materialCost').textContent = formatCurrency(materialCost);
+        }
+
+        function exportEstimate() {
+            let csv = 'Category,Item,Quantity,Unit,Quality,Unit Cost,Total Cost\n';
+            
+            Object.keys(costDatabase).forEach(categoryKey => {
+                const category = costDatabase[categoryKey];
+                category.items.forEach(item => {
+                    const itemKey = item.name.replace(/\s+/g, '_');
+                    const itemData = estimateData[categoryKey].items[itemKey];
+                    if (itemData.quantity > 0) {
+                        const cost = calculateItemCost(item, itemData.quantity, itemData.quality);
+                        csv += `${category.name},"${item.name}",${itemData.quantity},${item.unit},${itemData.quality},${item[itemData.quality]},${cost.toFixed(2)}\n`;
+                    }
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `construction-estimate-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            alert('✓ Estimate exported to CSV!');
+        }
+
+        // Event listeners
+        document.getElementById('regionSelect').addEventListener('change', (e) => {
+            region = parseFloat(e.target.value);
+            renderCategories();
+        });
+
+        document.getElementById('sqftInput').addEventListener('input', (e) => {
+            sqft = parseFloat(e.target.value) || 1500;
+            updateTotals();
+        });
+
+        document.getElementById('defaultQuality').addEventListener('change', () => {
+            renderCategories();
+        });
+
+        // Initialize
+        renderCategories();
+    </script>
+</body>
+</html>

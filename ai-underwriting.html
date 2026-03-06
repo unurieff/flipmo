@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Underwriting | Flipmo - Analyze Any Deal in 15 Seconds</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0F1419;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1F4E5F 0%, #2A9D8F 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFB830;
+        }
+        
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff 0%, #FFB830 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .input-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFB830 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-hint {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 16px;
+            background: rgba(31,78,95,0.3);
+            border: 2px solid rgba(42,157,143,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: rgba(31,78,95,0.5);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .analyze-btn {
+            width: 100%;
+            padding: 24px;
+            background: linear-gradient(135deg, #FF6B35, #FFB830);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 12px 40px rgba(255,107,53,0.5);
+            margin-top: 20px;
+        }
+        
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 50px rgba(255,107,53,0.6);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .analyzing {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .analyzing.show {
+            display: block;
+        }
+        
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,107,53,0.2);
+            border-top-color: #FF6B35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 30px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .analyzing-steps {
+            font-size: 16px;
+            color: rgba(255,255,255,0.8);
+            line-height: 2;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.6s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .decision-banner {
+            padding: 48px;
+            border-radius: 24px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .decision-banner.buy {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: 3px solid #34d399;
+        }
+        
+        .decision-banner.caution {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: 3px solid #fbbf24;
+        }
+        
+        .decision-banner.avoid {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: 3px solid #f87171;
+        }
+        
+        .decision-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .decision-text {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        
+        .confidence-score {
+            font-size: 28px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+        
+        .analysis-section {
+            background: rgba(31,78,95,0.3);
+            border: 1px solid rgba(42,157,143,0.3);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .analysis-section h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FFB830;
+            margin-bottom: 20px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.05);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .metric-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #FFB830;
+        }
+        
+        .flag-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .flag-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .flag-item.green {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+            color: #d1fae5;
+        }
+        
+        .flag-item.yellow {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #f59e0b;
+            color: #fef3c7;
+        }
+        
+        .flag-item.red {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid #ef4444;
+            color: #fecaca;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(255,184,48,0.2));
+            border: 2px solid #FF6B35;
+            border-radius: 20px;
+            padding: 32px;
+            margin-top: 32px;
+        }
+        
+        .recommendation-box h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFB830;
+            margin-bottom: 20px;
+        }
+        
+        .recommendation-box p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        
+        .recommendation-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .recommendation-box li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .recommendation-box li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: 700;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2A9D8F, #1F4E5F);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 157, 143, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .card { padding: 28px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>🧠 AI Underwriting</h1>
+        <p>Analyze any deal in 15 seconds. Never miss a red flag again.</p>
+        <p class="hero-subtitle">Paste property → Get instant analysis → Buy with confidence</p>
+    </div>
+
+    <div class="container">
+        <!-- Input Form -->
+        <div id="inputForm" class="card">
+            <div class="input-section">
+                <h2 class="section-title">Property Information</h2>
+                
+                <div class="input-group">
+                    <label class="input-label">Property URL (Optional)</label>
+                    <span class="input-hint">Paste Zillow, Redfin, or any property link</span>
+                    <input type="url" id="propertyUrl" placeholder="https://zillow.com/homedetails/...">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Property Address</label>
+                    <input type="text" id="address" placeholder="123 Main St, Austin, TX 78701" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="input-label">List Price ($)</label>
+                        <input type="number" id="listPrice" placeholder="425000" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Square Feet</label>
+                        <input type="number" id="sqft" placeholder="1850" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="input-label">Bedrooms</label>
+                        <input type="number" id="beds" placeholder="3" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Bathrooms</label>
+                        <input type="number" id="baths" placeholder="2" step="0.5" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Property Type</label>
+                    <input type="text" id="propertyType" placeholder="Single Family, Condo, Multi-Family, etc." required>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h2 class="section-title">Investment Analysis</h2>
+                
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="input-label">Estimated Rehab Cost ($)</label>
+                        <span class="input-hint">Your best estimate for repairs/renovation</span>
+                        <input type="number" id="rehabCost" placeholder="68000" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">After Repair Value - ARV ($)</label>
+                        <span class="input-hint">Estimated value after repairs</span>
+                        <input type="number" id="arv" placeholder="615000" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="input-label">Holding Period (months)</label>
+                        <input type="number" id="holdingPeriod" placeholder="6" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Monthly Holding Costs ($)</label>
+                        <span class="input-hint">Mortgage, utilities, insurance, etc.</span>
+                        <input type="number" id="holdingCosts" placeholder="3500" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Days on Market</label>
+                    <span class="input-hint">How long has this property been listed?</span>
+                    <input type="number" id="dom" placeholder="12">
+                </div>
+            </div>
+
+            <button class="analyze-btn" onclick="analyzeDeal()">
+                <span>🔍 Analyze This Deal</span>
+            </button>
+        </div>
+
+        <!-- Analyzing Animation -->
+        <div id="analyzing" class="card analyzing">
+            <div class="spinner"></div>
+            <div class="analyzing-steps">
+                <div>🔍 Extracting property data...</div>
+                <div>📊 Calculating investment metrics...</div>
+                <div>⚠️ Detecting risk factors...</div>
+                <div>💡 Generating scenarios...</div>
+                <div>🎯 Preparing recommendation...</div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="results">
+            <!-- Decision will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        function analyzeDeal() {
+            // Get all inputs
+            const data = {
+                url: document.getElementById('propertyUrl').value,
+                address: document.getElementById('address').value,
+                listPrice: parseFloat(document.getElementById('listPrice').value),
+                sqft: parseInt(document.getElementById('sqft').value),
+                beds: parseInt(document.getElementById('beds').value),
+                baths: parseFloat(document.getElementById('baths').value),
+                propertyType: document.getElementById('propertyType').value,
+                rehabCost: parseFloat(document.getElementById('rehabCost').value),
+                arv: parseFloat(document.getElementById('arv').value),
+                holdingPeriod: parseInt(document.getElementById('holdingPeriod').value),
+                holdingCosts: parseFloat(document.getElementById('holdingCosts').value),
+                dom: parseInt(document.getElementById('dom').value) || 0
+            };
+
+            // Validate
+            if (!data.address || !data.listPrice || !data.sqft || !data.arv) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Hide form, show analyzing
+            document.getElementById('inputForm').style.display = 'none';
+            document.getElementById('analyzing').classList.add('show');
+
+            // Simulate AI analysis (2 seconds)
+            setTimeout(() => {
+                displayResults(data);
+            }, 2000);
+        }
+
+        function displayResults(data) {
+            // Calculate metrics
+            const totalHoldingCosts = data.holdingCosts * data.holdingPeriod;
+            const totalInvestment = data.listPrice + data.rehabCost + totalHoldingCosts;
+            const sellingCosts = data.arv * 0.08; // 8% selling costs
+            const netProfit = data.arv - totalInvestment - sellingCosts;
+            const roi = (netProfit / totalInvestment) * 100;
+            const pricePerSqft = data.listPrice / data.sqft;
+            const arvPerSqft = data.arv / data.sqft;
+            const rehabPerSqft = data.rehabCost / data.sqft;
+
+            // Determine decision
+            let decision, decisionClass, decisionIcon, confidence;
+            
+            if (roi >= 15 && netProfit >= 50000) {
+                decision = "BUY THIS DEAL";
+                decisionClass = "buy";
+                decisionIcon = "✅";
+                confidence = 82;
+            } else if (roi >= 10 && netProfit >= 30000) {
+                decision = "PROCEED WITH CAUTION";
+                decisionClass = "caution";
+                decisionIcon = "⚠️";
+                confidence = 65;
+            } else {
+                decision = "AVOID THIS DEAL";
+                decisionClass = "avoid";
+                decisionIcon = "❌";
+                confidence = 45;
+            }
+
+            // Generate flags
+            const greenFlags = [];
+            const yellowFlags = [];
+            const redFlags = [];
+
+            // Analyze and create flags
+            if (roi >= 15) greenFlags.push("Strong ROI of " + roi.toFixed(1) + "% - Above market average");
+            if (netProfit >= 75000) greenFlags.push("Excellent profit potential: $" + netProfit.toLocaleString());
+            if (data.dom < 14) greenFlags.push("Low days on market (" + data.dom + " days) - Hot property");
+            if (pricePerSqft < 250) greenFlags.push("Good price per sqft: $" + pricePerSqft.toFixed(0) + " (below market average)");
+
+            if (rehabPerSqft > 40) yellowFlags.push("Higher rehab cost per sqft ($" + rehabPerSqft.toFixed(0) + ") - Verify estimate");
+            if (data.holdingPeriod > 8) yellowFlags.push("Long holding period (" + data.holdingPeriod + " months) - Increases risk");
+            if (roi < 12) yellowFlags.push("ROI below target (" + roi.toFixed(1) + "%) - Thin margins");
+
+            if (netProfit < 30000) redFlags.push("Low profit margin: $" + netProfit.toLocaleString() + " - High risk");
+            if (roi < 10) redFlags.push("ROI too low (" + roi.toFixed(1) + "%) - Not worth the risk");
+            if (data.dom > 30) redFlags.push("High days on market (" + data.dom + " days) - Potential issues");
+            if (totalInvestment > data.arv * 0.85) redFlags.push("Total investment too high - Limited profit buffer");
+
+            // Build HTML
+            const html = `
+                <div class="card">
+                    <div class="decision-banner ${decisionClass}">
+                        <div class="decision-icon">${decisionIcon}</div>
+                        <div class="decision-text">${decision}</div>
+                        <div class="confidence-score">Confidence: ${confidence}%</div>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3>📍 Property Summary</h3>
+                        <p style="font-size: 18px; line-height: 1.8; opacity: 0.9;">
+                            <strong>${data.address}</strong><br>
+                            ${data.beds} bed, ${data.baths} bath • ${data.sqft.toLocaleString()} sqft • ${data.propertyType}
+                        </p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3>💰 Financial Analysis</h3>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">List Price</div>
+                                <div class="metric-value">$${(data.listPrice/1000).toFixed(0)}K</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Total Investment</div>
+                                <div class="metric-value">$${(totalInvestment/1000).toFixed(0)}K</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Net Profit</div>
+                                <div class="metric-value" style="color: ${netProfit > 0 ? '#10b981' : '#ef4444'}">$${(netProfit/1000).toFixed(0)}K</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">ROI</div>
+                                <div class="metric-value" style="color: ${roi > 12 ? '#10b981' : '#f59e0b'}">${roi.toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${greenFlags.length > 0 ? `
+                    <div class="analysis-section">
+                        <h3>✅ Green Flags (Good Signs)</h3>
+                        <ul class="flag-list">
+                            ${greenFlags.map(flag => `<li class="flag-item green">${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+
+                    ${yellowFlags.length > 0 ? `
+                    <div class="analysis-section">
+                        <h3>⚠️ Yellow Flags (Caution)</h3>
+                        <ul class="flag-list">
+                            ${yellowFlags.map(flag => `<li class="flag-item yellow">${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+
+                    ${redFlags.length > 0 ? `
+                    <div class="analysis-section">
+                        <h3>🚨 Red Flags (Concerns)</h3>
+                        <ul class="flag-list">
+                            ${redFlags.map(flag => `<li class="flag-item red">${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+
+                    <div class="recommendation-box">
+                        <h3>💡 AI Recommendation</h3>
+                        ${generateRecommendation(data, roi, netProfit, decisionClass)}
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="exportPDF()">📄 Export PDF Report</button>
+                        <button class="btn btn-secondary" onclick="analyzeAnother()">🔄 Analyze Another Deal</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analyzing').classList.remove('show');
+            document.getElementById('results').innerHTML = html;
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateRecommendation(data, roi, netProfit, decision) {
+            if (decision === 'buy') {
+                const maxOffer = data.arv * 0.70 - data.rehabCost;
+                return `
+                    <p>This is a <strong>STRONG deal</strong> with solid profit potential. Here's what you should do:</p>
+                    <ul>
+                        <li>Maximum offer price: <strong>$${maxOffer.toLocaleString()}</strong> (70% rule)</li>
+                        <li>Keep rehab costs under <strong>$${(data.rehabCost * 1.1).toLocaleString()}</strong> (10% buffer)</li>
+                        <li>Target exit within <strong>${Math.min(data.holdingPeriod + 2, 8)} months</strong></li>
+                        <li>Expected profit: <strong>$${netProfit.toLocaleString()}</strong> (${roi.toFixed(1)}% ROI)</li>
+                    </ul>
+                    <p style="margin-top: 16px; opacity: 0.8;"><strong>You Should Verify:</strong> Walk the property, get contractor bids, check recent comps, review local market trends.</p>
+                `;
+            } else if (decision === 'caution') {
+                return `
+                    <p>This deal has <strong>potential but requires careful consideration</strong>. Proceed only if:</p>
+                    <ul>
+                        <li>You can negotiate price down to <strong>$${(data.listPrice * 0.92).toLocaleString()}</strong> or less</li>
+                        <li>You verify rehab costs won't exceed <strong>$${data.rehabCost.toLocaleString()}</strong></li>
+                        <li>You have strong contractor relationships to minimize costs</li>
+                        <li>You can exit quickly (within ${data.holdingPeriod} months)</li>
+                    </ul>
+                    <p style="margin-top: 16px; opacity: 0.8;"><strong>Risk factors to watch:</strong> Thin profit margins, market conditions, potential hidden repairs.</p>
+                `;
+            } else {
+                return `
+                    <p><strong>This deal doesn't meet investment criteria.</strong> Here's why you should pass:</p>
+                    <ul>
+                        <li>ROI too low at ${roi.toFixed(1)}% (target: 15%+)</li>
+                        <li>Limited profit potential ($${netProfit.toLocaleString()})</li>
+                        <li>High risk-to-reward ratio</li>
+                        <li>Better opportunities available in market</li>
+                    </ul>
+                    <p style="margin-top: 16px; opacity: 0.8;"><strong>What to look for instead:</strong> Properties priced 15-20% below market, lower rehab costs, faster exit potential.</p>
+                `;
+            }
+        }
+
+        function exportPDF() {
+            alert('📄 PDF export coming soon! This feature will be available in the next update.');
+        }
+
+        function analyzeAnother() {
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('inputForm').style.display = 'block';
+            document.getElementById('inputForm').scrollIntoView({ behavior: 'smooth' });
+            
+            // Clear form
+            document.querySelectorAll('input').forEach(input => {
+                if (input.type !== 'button') input.value = '';
+            });
+        }
+    </script>
+</body>
+</html>

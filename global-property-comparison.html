@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Property Comparison | Flipmo - Compare Deals Worldwide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--flipmo-teal) 0%, var(--flipmo-bright-teal) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Property Cards */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .property-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .property-card:hover {
+            border-color: var(--flipmo-bright-teal);
+            box-shadow: 0 8px 24px rgba(42, 157, 143, 0.1);
+        }
+
+        .property-card.active {
+            border-color: var(--flipmo-orange);
+            background: #fff8f0;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--flipmo-teal);
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--flipmo-bright-teal);
+        }
+
+        /* Add Property Button */
+        .add-property-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        .add-property-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+        }
+
+        .add-property-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 32px 0;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--flipmo-bright-teal), #10b981);
+            color: white;
+            box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(42, 157, 143, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--flipmo-teal);
+            border: 2px solid var(--flipmo-teal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--flipmo-teal);
+            color: white;
+        }
+
+        /* Comparison Results */
+        .comparison-results {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            margin-top: 32px;
+            display: none;
+        }
+
+        .comparison-results.active {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .results-header h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 32px;
+            color: var(--flipmo-teal);
+            margin-bottom: 8px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .comparison-table thead {
+            background: linear-gradient(135deg, var(--flipmo-teal), var(--flipmo-bright-teal));
+            color: white;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .comparison-table th {
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .comparison-table td {
+            font-size: 16px;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .best-value {
+            background: #d1fae5 !important;
+            font-weight: 700;
+            color: #065f46;
+            position: relative;
+        }
+
+        .best-value::after {
+            content: '⭐';
+            margin-left: 8px;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        /* Recommendation Box */
+        .recommendation {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .recommendation h3 {
+            color: #065f46;
+            font-size: 22px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommendation p {
+            color: #047857;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Currency Badge */
+        .currency-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #075985;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>🌍 Global Property Comparison</h1>
+        <p>Compare properties from anywhere in the world - Miami, Dubai, London, Tokyo, and beyond</p>
+    </div>
+
+    <div class="container">
+        <div id="propertiesContainer" class="properties-grid">
+            <!-- Property cards will be added here dynamically -->
+        </div>
+
+        <button id="addPropertyBtn" class="add-property-btn">
+            ➕ Add Property to Compare
+        </button>
+
+        <div class="action-buttons">
+            <button id="compareBtn" class="btn btn-primary">⚖️ Compare Properties</button>
+            <button id="clearBtn" class="btn btn-secondary">🔄 Clear All</button>
+        </div>
+
+        <div id="comparisonResults" class="comparison-results">
+            <div class="results-header">
+                <h2>Comparison Results</h2>
+                <p>All prices converted to USD for easy comparison</p>
+            </div>
+            
+            <div id="comparisonTableContainer"></div>
+            
+            <div id="recommendation" class="recommendation"></div>
+
+            <div class="action-buttons">
+                <button id="exportPdfBtn" class="btn btn-primary">📄 Export as PDF</button>
+            </div>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+            <div class="empty-state-icon">🏘️</div>
+            <h3>No Properties Added Yet</h3>
+            <p>Click "Add Property to Compare" to get started!</p>
+        </div>
+    </div>
+
+    <script>
+        // Exchange rates (simplified - in production, fetch from API)
+        const exchangeRates = {
+            'USD': 1,
+            'EUR': 0.92,
+            'GBP': 0.79,
+            'AED': 3.67,
+            'INR': 83.12,
+            'BRL': 4.97,
+            'MXN': 17.24,
+            'JPY': 149.50,
+            'AUD': 1.52,
+            'CAD': 1.36
+        };
+
+        const currencies = Object.keys(exchangeRates);
+
+        let properties = [];
+        let propertyIdCounter = 1;
+
+        // Initialize with one property card
+        function init() {
+            addProperty();
+            updateUI();
+        }
+
+        // Add a new property card
+        function addProperty() {
+            if (properties.length >= 5) {
+                alert('Maximum 5 properties can be compared at once');
+                return;
+            }
+
+            const property = {
+                id: propertyIdCounter++,
+                name: '',
+                city: '',
+                country: '',
+                price: '',
+                currency: 'USD',
+                propertyType: '',
+                monthlyRent: '',
+                appreciation: '',
+                totalInvestment: '',
+                expectedROI: ''
+            };
+
+            properties.push(property);
+            renderProperties();
+            updateUI();
+        }
+
+        // Remove a property
+        function removeProperty(id) {
+            properties = properties.filter(p => p.id !== id);
+            renderProperties();
+            updateUI();
+        }
+
+        // Render all property cards
+        function renderProperties() {
+            const container = document.getElementById('propertiesContainer');
+            
+            container.innerHTML = properties.map((prop, index) => `
+                <div class="property-card ${prop.name ? 'active' : ''}">
+                    <div class="card-header">
+                        <div class="card-title">Property ${index + 1}</div>
+                        ${properties.length > 1 ? `<button class="remove-btn" onclick="removeProperty(${prop.id})">Remove</button>` : ''}
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Property Name / Location</label>
+                        <input type="text" 
+                               value="${prop.name}" 
+                               onchange="updateProperty(${prop.id}, 'name', this.value)"
+                               placeholder="e.g., Miami Beach Condo">
+                    </div>
+
+                    <div class="input-group">
+                        <label>City</label>
+                        <input type="text" 
+                               value="${prop.city}" 
+                               onchange="updateProperty(${prop.id}, 'city', this.value)"
+                               placeholder="e.g., Miami">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Country</label>
+                        <input type="text" 
+                               value="${prop.country}" 
+                               onchange="updateProperty(${prop.id}, 'country', this.value)"
+                               placeholder="e.g., USA">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Purchase Price</label>
+                        <input type="number" 
+                               value="${prop.price}" 
+                               onchange="updateProperty(${prop.id}, 'price', this.value)"
+                               placeholder="500000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Currency</label>
+                        <select onchange="updateProperty(${prop.id}, 'currency', this.value)">
+                            ${currencies.map(curr => `
+                                <option value="${curr}" ${prop.currency === curr ? 'selected' : ''}>${curr}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Property Type</label>
+                        <input type="text" 
+                               value="${prop.propertyType}" 
+                               onchange="updateProperty(${prop.id}, 'propertyType', this.value)"
+                               placeholder="e.g., Condo, House, Tower Unit">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Expected Monthly Rent (${prop.currency})</label>
+                        <input type="number" 
+                               value="${prop.monthlyRent}" 
+                               onchange="updateProperty(${prop.id}, 'monthlyRent', this.value)"
+                               placeholder="3000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Annual Appreciation (%)</label>
+                        <input type="number" 
+                               step="0.1"
+                               value="${prop.appreciation}" 
+                               onchange="updateProperty(${prop.id}, 'appreciation', this.value)"
+                               placeholder="5">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Total Investment Needed (${prop.currency})</label>
+                        <input type="number" 
+                               value="${prop.totalInvestment}" 
+                               onchange="updateProperty(${prop.id}, 'totalInvestment', this.value)"
+                               placeholder="550000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Expected ROI/Year (%)</label>
+                        <input type="number" 
+                               step="0.1"
+                               value="${prop.expectedROI}" 
+                               onchange="updateProperty(${prop.id}, 'expectedROI', this.value)"
+                               placeholder="12">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update property field
+        function updateProperty(id, field, value) {
+            const property = properties.find(p => p.id === id);
+            if (property) {
+                property[field] = value;
+                renderProperties();
+            }
+        }
+
+        // Update UI state
+        function updateUI() {
+            const addBtn = document.getElementById('addPropertyBtn');
+            const compareBtn = document.getElementById('compareBtn');
+            const emptyState = document.getElementById('emptyState');
+
+            addBtn.disabled = properties.length >= 5;
+            compareBtn.disabled = properties.length < 2;
+
+            emptyState.style.display = properties.length === 0 ? 'block' : 'none';
+        }
+
+        // Convert to USD
+        function convertToUSD(amount, currency) {
+            return amount / exchangeRates[currency];
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Compare properties
+        function compareProperties() {
+            if (properties.length < 2) {
+                alert('Please add at least 2 properties to compare');
+                return;
+            }
+
+            // Validate all properties have required data
+            const incomplete = properties.find(p => !p.name || !p.price || !p.totalInvestment);
+            if (incomplete) {
+                alert('Please fill in at least Property Name, Purchase Price, and Total Investment for all properties');
+                return;
+            }
+
+            // Convert all to USD and calculate metrics
+            const comparison = properties.map(p => {
+                const priceUSD = convertToUSD(parseFloat(p.price) || 0, p.currency);
+                const rentUSD = convertToUSD(parseFloat(p.monthlyRent) || 0, p.currency);
+                const investmentUSD = convertToUSD(parseFloat(p.totalInvestment) || 0, p.currency);
+                const annualRent = rentUSD * 12;
+                const cashOnCashReturn = investmentUSD > 0 ? (annualRent / investmentUSD * 100) : 0;
+
+                return {
+                    ...p,
+                    priceUSD,
+                    rentUSD,
+                    investmentUSD,
+                    annualRent,
+                    cashOnCashReturn,
+                    roi: parseFloat(p.expectedROI) || 0,
+                    appreciation: parseFloat(p.appreciation) || 0
+                };
+            });
+
+            // Find best values
+            const bestROI = Math.max(...comparison.map(p => p.roi));
+            const bestCashFlow = Math.max(...comparison.map(p => p.rentUSD));
+            const bestAppreciation = Math.max(...comparison.map(p => p.appreciation));
+            const lowestPrice = Math.min(...comparison.map(p => p.priceUSD));
+
+            // Render comparison table
+            renderComparisonTable(comparison, { bestROI, bestCashFlow, bestAppreciation, lowestPrice });
+
+            // Show results
+            document.getElementById('comparisonResults').classList.add('active');
+            document.getElementById('comparisonResults').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Render comparison table
+        function renderComparisonTable(comparison, bestValues) {
+            const container = document.getElementById('comparisonTableContainer');
+
+            const tableHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            ${comparison.map(p => `<th>${p.name} <span class="currency-badge">${p.currency}</span></th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Location</strong></td>
+                            ${comparison.map(p => `<td>${p.city}, ${p.country}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Property Type</strong></td>
+                            ${comparison.map(p => `<td>${p.propertyType || 'N/A'}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Purchase Price (USD)</strong></td>
+                            ${comparison.map(p => `<td class="${p.priceUSD === bestValues.lowestPrice ? 'best-value' : ''}">${formatCurrency(p.priceUSD)}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Total Investment (USD)</strong></td>
+                            ${comparison.map(p => `<td>${formatCurrency(p.investmentUSD)}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Monthly Rent (USD)</strong></td>
+                            ${comparison.map(p => `<td class="${p.rentUSD === bestValues.bestCashFlow ? 'best-value' : ''}">${formatCurrency(p.rentUSD)}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Annual Rent (USD)</strong></td>
+                            ${comparison.map(p => `<td>${formatCurrency(p.annualRent)}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Cash-on-Cash Return</strong></td>
+                            ${comparison.map(p => `<td>${p.cashOnCashReturn.toFixed(2)}%</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Expected ROI</strong></td>
+                            ${comparison.map(p => `<td class="${p.roi === bestValues.bestROI ? 'best-value' : ''}">${p.roi.toFixed(2)}%</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td><strong>Annual Appreciation</strong></td>
+                            ${comparison.map(p => `<td class="${p.appreciation === bestValues.bestAppreciation ? 'best-value' : ''}">${p.appreciation.toFixed(2)}%</td>`).join('')}
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+
+            // Generate recommendation
+            const bestProperty = comparison.reduce((best, current) => {
+                return current.roi > best.roi ? current : best;
+            });
+
+            const recommendationHTML = `
+                <h3>🏆 Recommendation</h3>
+                <p>
+                    <strong>${bestProperty.name}</strong> (${bestProperty.city}, ${bestProperty.country}) 
+                    appears to be the best overall deal with:
+                </p>
+                <ul style="margin-top: 12px; padding-left: 20px;">
+                    <li>Highest ROI: <strong>${bestProperty.roi.toFixed(2)}%</strong></li>
+                    <li>Monthly Cash Flow: <strong>${formatCurrency(bestProperty.rentUSD)}</strong></li>
+                    <li>Total Investment: <strong>${formatCurrency(bestProperty.investmentUSD)}</strong></li>
+                    <li>Annual Appreciation: <strong>${bestProperty.appreciation.toFixed(2)}%</strong></li>
+                </ul>
+                <p style="margin-top: 16px; font-size: 14px; color: #6b7280;">
+                    Always conduct thorough due diligence and consult with local real estate professionals before making investment decisions.
+                </p>
+            `;
+
+            document.getElementById('recommendation').innerHTML = recommendationHTML;
+        }
+
+        // Clear all properties
+        function clearAll() {
+            if (confirm('Clear all properties? This cannot be undone.')) {
+                properties = [];
+                propertyIdCounter = 1;
+                addProperty();
+                document.getElementById('comparisonResults').classList.remove('active');
+                updateUI();
+            }
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+
+            const orange = [255, 107, 53];
+            const teal = [31, 78, 95];
+
+            // Header
+            doc.setFillColor(...orange);
+            doc.rect(0, 0, 297, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Flipmo - Global Property Comparison', 15, 15);
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, 15, 22);
+
+            let yPos = 40;
+
+            // Property names
+            doc.setTextColor(...teal);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Comparing Properties:', 15, yPos);
+            yPos += 6;
+
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            properties.forEach((p, idx) => {
+                doc.text(`${idx + 1}. ${p.name} (${p.city}, ${p.country})`, 20, yPos);
+                yPos += 5;
+            });
+
+            yPos += 5;
+
+            // Simplified comparison
+            const comparison = properties.map(p => ({
+                name: p.name,
+                price: formatCurrency(convertToUSD(parseFloat(p.price) || 0, p.currency)),
+                roi: `${p.expectedROI}%`
+            }));
+
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+
+            doc.text('Property', 15, yPos);
+            doc.text('Price (USD)', 100, yPos);
+            doc.text('ROI', 180, yPos);
+            yPos += 6;
+
+            doc.setFont('helvetica', 'normal');
+            comparison.forEach(p => {
+                doc.text(p.name, 15, yPos);
+                doc.text(p.price, 100, yPos);
+                doc.text(p.roi, 180, yPos);
+                yPos += 6;
+            });
+
+            doc.save('Global_Property_Comparison.pdf');
+            alert('✓ Comparison exported as PDF!');
+        }
+
+        // Event listeners
+        document.getElementById('addPropertyBtn').addEventListener('click', addProperty);
+        document.getElementById('compareBtn').addEventListener('click', compareProperties);
+        document.getElementById('clearBtn').addEventListener('click', clearAll);
+        document.getElementById('exportPdfBtn').addEventListener('click', exportToPDF);
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

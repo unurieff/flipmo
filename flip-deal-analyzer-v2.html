@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deal Analyzer | Flipmo - Analyze Fix & Flip Deals in Minutes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--flipmo-teal) 0%, var(--flipmo-bright-teal) 100%);
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.gray {
+            background-color: #f9fafb;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        .section-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #4b5563;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-content p {
+            margin-bottom: 16px;
+        }
+
+        .section-content strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        /* Problem Section */
+        .problem {
+            text-align: center;
+        }
+
+        .problem .highlight {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        /* Solution Section */
+        .solution {
+            text-align: center;
+        }
+
+        .solution-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .solution-point {
+            font-size: 16px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 80px 20px;
+            background-color: #f9fafb;
+        }
+
+        .calculator-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .calculator-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .calculator-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-success {
+            background: var(--flipmo-bright-teal);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--flipmo-teal);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background-color: #fafafa;
+            color: #1a1a1a;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #ffffff;
+        }
+
+        .deal-name-input {
+            margin-bottom: 24px;
+        }
+
+        .deal-name-input input {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .results-section {
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .results-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 15px;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .result-value.positive {
+            color: var(--flipmo-bright-teal);
+        }
+
+        .result-value.negative {
+            color: #dc2626;
+        }
+
+        .warning {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            margin-top: 24px;
+            border-radius: 4px;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        /* Saved Deals Section */
+        .saved-deals-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .saved-deals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .saved-deals-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .saved-deals-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .saved-deal-item {
+            background-color: #fafafa;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .saved-deal-item:hover {
+            background-color: #f3f4f6;
+            border-color: #3b82f6;
+        }
+
+        .saved-deal-info {
+            flex: 1;
+        }
+
+        .saved-deal-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .saved-deal-meta {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .saved-deal-profit {
+            font-size: 18px;
+            font-weight: 700;
+            margin-right: 16px;
+        }
+
+        .saved-deal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: transparent;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background-color: #f3f4f6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Audience Section */
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .audience-item {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            font-size: 18px;
+            font-weight: 500;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        /* Why Different Section */
+        .why-different {
+            background: linear-gradient(135deg, var(--flipmo-teal) 0%, var(--flipmo-bright-teal) 50%, #34d399 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-different::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        .why-different .section-title {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .why-different .section-content {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .focus-statement {
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 32px;
+            font-style: italic;
+            background: linear-gradient(135deg, #fff 0%, var(--flipmo-yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 100px 20px;
+            background: linear-gradient(180deg, #f9fafb 0%, #fff 100%);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 36px;
+            max-width: 1100px;
+            margin: 60px auto 0;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(31,78,95,0.1);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .pricing-card:hover {
+            border-color: var(--flipmo-orange);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 48px rgba(255, 107, 53, 0.2);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--flipmo-orange);
+            border-width: 3px;
+            background: linear-gradient(135deg, rgba(255,107,53,0.05), rgba(42,157,143,0.05));
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.25);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-8px) scale(1.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            padding: 8px 24px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+        }
+
+        .pricing-name {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--flipmo-teal);
+        }
+
+        .pricing-price {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            color: var(--flipmo-black);
+            margin-bottom: 12px;
+            line-height: 1;
+        }
+
+        .pricing-price span {
+            font-size: 20px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .pricing-description {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 36px;
+            font-weight: 500;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 36px;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 14px 0;
+            font-size: 15px;
+            color: #374151;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            line-height: 1.6;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            color: var(--flipmo-bright-teal);
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 18px 32px;
+            font-size: 17px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .pricing-cta.primary {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+        }
+
+        .pricing-cta.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 107, 53, 0.4);
+        }
+
+        .pricing-cta.secondary {
+            background: white;
+            color: var(--flipmo-teal);
+            border: 2px solid var(--flipmo-teal);
+        }
+
+        .pricing-cta.secondary:hover {
+            background: var(--flipmo-teal);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--flipmo-black) 0%, #1a2332 100%);
+            color: white;
+            padding: 80px 20px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--flipmo-orange), transparent);
+        }
+
+        .footer-tagline {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .footer-link:hover {
+            color: var(--flipmo-orange);
+            transform: translateY(-2px);
+        }
+
+        .footer-link:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--flipmo-orange);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        /* Flipmo Navigation */
+        .flipmo-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .flipmo-logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .flipmo-nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .flipmo-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .flipmo-back-btn:hover {
+            background: var(--flipmo-orange);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 60px 20px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .calculator-container {
+                padding: 24px;
+            }
+
+            .calculator-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .calculator-actions {
+                width: 100%;
+            }
+
+            .calculator-actions button {
+                flex: 1;
+            }
+
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .result-value {
+                font-size: 20px;
+            }
+
+            .saved-deal-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .saved-deal-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Flipmo Navigation -->
+    <nav class="flipmo-nav">
+        <a href="index.html" class="flipmo-logo">Flipmo</a>
+        <div class="flipmo-nav-links">
+            <a href="index.html" class="flipmo-back-btn">← All Tools</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Analyze a House Flip in 2 Minutes<br>— Before You Make an Offer</h1>
+        <p>Instantly calculate true profit, ROI, and your maximum safe offer using a simple, investor-grade calculator.</p>
+        <a href="#calculator" class="cta-button">Try the Free Calculator</a>
+    </div>
+
+    <!-- Problem Section -->
+    <div class="section problem">
+        <h2 class="section-title">The Problem</h2>
+        <div class="section-content">
+            <p><strong>Most new investors lose money before they even start…</strong> because they miscalculate deals.</p>
+            <p>They underestimate holding costs. They forget selling fees. They overpay.</p>
+            <p class="highlight">A small mistake can cost $20,000+.</p>
+        </div>
+    </div>
+
+    <!-- Solution Section -->
+    <div class="section gray solution">
+        <h2 class="section-title">The Solution</h2>
+        <div class="section-content">
+            <p><strong>Flip Deal Analyzer gives you clarity in seconds.</strong></p>
+            <p>Enter 6 numbers. See your real profit instantly. Know exactly how high you can safely offer.</p>
+            <div class="solution-points">
+                <div class="solution-point">No spreadsheets.</div>
+                <div class="solution-point">No complex tools.</div>
+                <div class="solution-point">No guesswork.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What You Get Section -->
+    <div class="section">
+        <h2 class="section-title">What You Get</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">💰</div>
+                <div class="feature-title">Total Project Cost</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📈</div>
+                <div class="feature-title">Net Profit</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">ROI</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Maximum Allowable Offer (MAO)</div>
+            </div>
+        </div>
+        <div class="section-content" style="text-align: center; margin-top: 40px;">
+            <p><strong>Clear. Fast. Accurate.</strong></p>
+        </div>
+    </div>
+
+    <!-- Calculator Section -->
+    <div id="calculator" class="calculator-section">
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h2 class="calculator-title">Flip Deal Analyzer</h2>
+                <div class="calculator-actions">
+                    <button class="btn btn-success" id="saveDealBtn">💾 Save Deal</button>
+                    <button class="btn btn-secondary" id="clearBtn">🔄 Clear</button>
+                    <button class="btn btn-primary" id="exportBtn">📄 Export PDF</button>
+                </div>
+            </div>
+
+            <div class="deal-name-input">
+                <label for="dealName">Deal Name (Optional)</label>
+                <input type="text" id="dealName" placeholder="e.g., 123 Main St Property">
+            </div>
+
+            <div class="input-group">
+                <label for="purchasePrice">Purchase Price ($)</label>
+                <input type="number" id="purchasePrice" placeholder="250000" step="0.01">
+            </div>
+
+            <div class="input-group">
+                <label for="rehabBudget">Rehab Budget ($)</label>
+                <input type="number" id="rehabBudget" placeholder="50000" step="0.01">
+            </div>
+
+            <div class="input-group">
+                <label for="arv">ARV – After Repair Value ($)</label>
+                <input type="number" id="arv" placeholder="400000" step="0.01">
+            </div>
+
+            <div class="input-group">
+                <label for="holdingPeriod">Holding Period (months)</label>
+                <input type="number" id="holdingPeriod" placeholder="6" step="1">
+            </div>
+
+            <div class="input-group">
+                <label for="monthlyHoldingCost">Monthly Holding Cost ($)</label>
+                <input type="number" id="monthlyHoldingCost" placeholder="2500" step="0.01">
+            </div>
+
+            <div class="input-group">
+                <label for="sellingCostPercent">Selling Cost (%)</label>
+                <input type="number" id="sellingCostPercent" placeholder="6" step="0.01">
+            </div>
+
+            <div class="results-section">
+                <h3 class="results-title">Your Results</h3>
+
+                <div class="result-item">
+                    <span class="result-label">Total Project Cost</span>
+                    <span class="result-value" id="totalProjectCost">$0.00</span>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Net Profit</span>
+                    <span class="result-value" id="netProfit">$0.00</span>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">ROI</span>
+                    <span class="result-value" id="roi">0.0%</span>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Maximum Allowable Offer (MAO)</span>
+                    <span class="result-value" id="mao">$0.00</span>
+                </div>
+
+                <div id="roiWarning" class="warning" style="display: none;">
+                    <p class="warning-text">⚠️ ROI is below 10% — consider if this deal meets your investment criteria</p>
+                </div>
+            </div>
+
+            <!-- Saved Deals Section -->
+            <div class="saved-deals-section">
+                <div class="saved-deals-header">
+                    <h3 class="saved-deals-title">Saved Deals</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-sm" id="compareDealsBtn" style="display: none;">⚖️ Compare Selected</button>
+                        <button class="btn btn-secondary btn-sm" id="clearAllDealsBtn">Clear All</button>
+                    </div>
+                </div>
+                <div id="savedDealsList" class="saved-deals-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>No saved deals yet. Save your first deal above!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who This Is For Section -->
+    <div class="section gray">
+        <h2 class="section-title">Who This Is For</h2>
+        <div class="audience-grid">
+            <div class="audience-item">New house flippers</div>
+            <div class="audience-item">Real estate investors</div>
+            <div class="audience-item">Wholesalers</div>
+            <div class="audience-item">Buy & hold investors evaluating exit options</div>
+        </div>
+    </div>
+
+    <!-- Why It's Different Section -->
+    <div class="section why-different">
+        <h2 class="section-title">Why It's Different</h2>
+        <div class="section-content">
+            <p>Most calculators hide real costs or are overloaded with features.</p>
+            <p class="focus-statement">This tool focuses on one thing:<br>Making a smart deal decision fast.</p>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="pricing" class="pricing-section">
+        <h2 class="section-title" style="font-family: 'Clash Display', sans-serif; font-size: 48px; margin-bottom: 16px;">Simple, Transparent Pricing</h2>
+        <p style="text-align: center; color: #6b7280; font-size: 20px; margin-bottom: 20px;">Choose the plan that works for you</p>
+        
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="pricing-name">Free</div>
+                <div class="pricing-price">$0<span>/month</span></div>
+                <div class="pricing-description">Try it out, no credit card needed</div>
+                <ul class="pricing-features">
+                    <li>Unlimited calculations</li>
+                    <li>Save up to 5 deals</li>
+                    <li>Export results</li>
+                    <li>Basic calculator features</li>
+                </ul>
+                <button class="pricing-cta secondary" onclick="scrollToCalculator()">Get Started Free</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Most Popular</div>
+                <div class="pricing-name">Pro</div>
+                <div class="pricing-price">$49<span>/month</span></div>
+                <div class="pricing-description">For serious investors</div>
+                <ul class="pricing-features">
+                    <li>Everything in Free</li>
+                    <li>Save unlimited deals</li>
+                    <li>Compare multiple deals</li>
+                    <li>Advanced scenarios</li>
+                    <li>Market data insights</li>
+                    <li>Construction estimator</li>
+                    <li>Priority support</li>
+                </ul>
+                <button class="pricing-cta primary" onclick="window.open('https://gumroad.com', '_blank')">Start Pro Trial</button>
+            </div>
+
+            <!-- Team Plan -->
+            <div class="pricing-card">
+                <div class="pricing-name">Team</div>
+                <div class="pricing-price">$99<span>/month</span></div>
+                <div class="pricing-description">For wholesalers & teams</div>
+                <ul class="pricing-features">
+                    <li>Everything in Pro</li>
+                    <li>5 team members</li>
+                    <li>Shared deal pipeline</li>
+                    <li>Team collaboration</li>
+                    <li>Custom templates</li>
+                    <li>API access</li>
+                    <li>Dedicated support</li>
+                </ul>
+                <button class="pricing-cta secondary" onclick="window.open('https://gumroad.com', '_blank')">Contact Sales</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p class="footer-tagline">Built for serious investors who make decisions with numbers, not guesses.</p>
+        <div class="footer-links">
+            <a href="#" class="footer-link">About</a>
+            <a href="#" class="footer-link">Contact</a>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+        </div>
+        <p style="margin-top: 32px; font-size: 14px; opacity: 0.6;">© 2026 Flip Deal Analyzer. All rights reserved.</p>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Delete Deal?</h3>
+            <p>Are you sure you want to delete this deal? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deal Comparison Modal -->
+    <div id="comparisonModal" class="modal">
+        <div class="modal-content" style="max-width: 90%; width: 1200px; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 class="modal-title">Deal Comparison</h3>
+                <button class="btn btn-secondary btn-sm" onclick="closeComparisonModal()">✕ Close</button>
+            </div>
+            <div id="comparisonContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get all input elements
+        const inputs = {
+            dealName: document.getElementById('dealName'),
+            purchasePrice: document.getElementById('purchasePrice'),
+            rehabBudget: document.getElementById('rehabBudget'),
+            arv: document.getElementById('arv'),
+            holdingPeriod: document.getElementById('holdingPeriod'),
+            monthlyHoldingCost: document.getElementById('monthlyHoldingCost'),
+            sellingCostPercent: document.getElementById('sellingCostPercent')
+        };
+
+        // Get all result elements
+        const results = {
+            totalProjectCost: document.getElementById('totalProjectCost'),
+            netProfit: document.getElementById('netProfit'),
+            roi: document.getElementById('roi'),
+            mao: document.getElementById('mao'),
+            roiWarning: document.getElementById('roiWarning')
+        };
+
+        // LocalStorage key
+        const STORAGE_KEY = 'flipDealAnalyzer_deals';
+        let dealToDelete = null;
+
+        // Format currency
+        function formatCurrency(value) {
+            return '$' + value.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Format percentage
+        function formatPercentage(value) {
+            return value.toFixed(1) + '%';
+        }
+
+        // Calculate and update results
+        function calculate() {
+            const purchasePrice = parseFloat(inputs.purchasePrice.value) || 0;
+            const rehabBudget = parseFloat(inputs.rehabBudget.value) || 0;
+            const arv = parseFloat(inputs.arv.value) || 0;
+            const holdingPeriod = parseFloat(inputs.holdingPeriod.value) || 0;
+            const monthlyHoldingCost = parseFloat(inputs.monthlyHoldingCost.value) || 0;
+            const sellingCostPercent = parseFloat(inputs.sellingCostPercent.value) || 0;
+
+            const totalHoldingCost = holdingPeriod * monthlyHoldingCost;
+            const sellingCost = arv * (sellingCostPercent / 100);
+            const totalProjectCost = purchasePrice + rehabBudget + totalHoldingCost + sellingCost;
+            const netProfit = arv - totalProjectCost;
+            const investmentBase = purchasePrice + rehabBudget;
+            const roi = investmentBase > 0 ? (netProfit / investmentBase) * 100 : 0;
+            const mao = (arv * 0.7) - rehabBudget - totalHoldingCost - sellingCost;
+
+            results.totalProjectCost.textContent = formatCurrency(totalProjectCost);
+            results.netProfit.textContent = formatCurrency(netProfit);
+            results.roi.textContent = formatPercentage(roi);
+            results.mao.textContent = formatCurrency(mao);
+
+            results.netProfit.classList.remove('positive', 'negative');
+            if (netProfit > 0) {
+                results.netProfit.classList.add('positive');
+            } else if (netProfit < 0) {
+                results.netProfit.classList.add('negative');
+            }
+
+            if (roi < 10 && roi !== 0) {
+                results.roiWarning.style.display = 'block';
+            } else {
+                results.roiWarning.style.display = 'none';
+            }
+
+            return { purchasePrice, rehabBudget, arv, holdingPeriod, monthlyHoldingCost, sellingCostPercent, totalProjectCost, netProfit, roi, mao };
+        }
+
+        // Save deal to localStorage
+        function saveDeal() {
+            const dealName = inputs.dealName.value.trim() || 'Untitled Deal';
+            const calc = calculate();
+            
+            const deal = {
+                id: Date.now(),
+                name: dealName,
+                date: new Date().toISOString(),
+                inputs: {
+                    purchasePrice: calc.purchasePrice,
+                    rehabBudget: calc.rehabBudget,
+                    arv: calc.arv,
+                    holdingPeriod: calc.holdingPeriod,
+                    monthlyHoldingCost: calc.monthlyHoldingCost,
+                    sellingCostPercent: calc.sellingCostPercent
+                },
+                results: {
+                    totalProjectCost: calc.totalProjectCost,
+                    netProfit: calc.netProfit,
+                    roi: calc.roi,
+                    mao: calc.mao
+                }
+            };
+
+            const deals = getSavedDeals();
+            deals.unshift(deal);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(deals));
+            
+            renderSavedDeals();
+            showNotification('✓ Deal saved successfully!');
+        }
+
+        // Get saved deals from localStorage
+        function getSavedDeals() {
+            const deals = localStorage.getItem(STORAGE_KEY);
+            return deals ? JSON.parse(deals) : [];
+        }
+
+        // Load deal into calculator
+        function loadDeal(dealId) {
+            const deals = getSavedDeals();
+            const deal = deals.find(d => d.id === dealId);
+            
+            if (deal) {
+                inputs.dealName.value = deal.name;
+                inputs.purchasePrice.value = deal.inputs.purchasePrice;
+                inputs.rehabBudget.value = deal.inputs.rehabBudget;
+                inputs.arv.value = deal.inputs.arv;
+                inputs.holdingPeriod.value = deal.inputs.holdingPeriod;
+                inputs.monthlyHoldingCost.value = deal.inputs.monthlyHoldingCost;
+                inputs.sellingCostPercent.value = deal.inputs.sellingCostPercent;
+                
+                calculate();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showNotification('✓ Deal loaded!');
+            }
+        }
+
+        // Delete deal
+        function deleteDeal(dealId) {
+            dealToDelete = dealId;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            dealToDelete = null;
+        }
+
+        function confirmDelete() {
+            if (dealToDelete) {
+                const deals = getSavedDeals();
+                const filtered = deals.filter(d => d.id !== dealToDelete);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+                renderSavedDeals();
+                closeDeleteModal();
+                showNotification('✓ Deal deleted');
+            }
+        }
+
+        // Clear all deals
+        function clearAllDeals() {
+            if (confirm('Are you sure you want to delete all saved deals? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderSavedDeals();
+                showNotification('✓ All deals cleared');
+            }
+        }
+
+        // Render saved deals
+        function renderSavedDeals() {
+            const deals = getSavedDeals();
+            const container = document.getElementById('savedDealsList');
+            
+            if (deals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📁</div>
+                        <p>No saved deals yet. Save your first deal above!</p>
+                    </div>
+                `;
+                document.getElementById('compareDealsBtn').style.display = 'none';
+                return;
+            }
+
+            container.innerHTML = deals.map(deal => {
+                const date = new Date(deal.date).toLocaleDateString();
+                const profitClass = deal.results.netProfit > 0 ? 'positive' : 'negative';
+                
+                return `
+                    <div class="saved-deal-item">
+                        <input type="checkbox" class="deal-checkbox" data-deal-id="${deal.id}" 
+                               onchange="updateCompareButton()" 
+                               style="margin-right: 12px; width: 18px; height: 18px; cursor: pointer;">
+                        <div class="saved-deal-info" onclick="loadDeal(${deal.id})" style="cursor: pointer; flex: 1;">
+                            <div class="saved-deal-name">${deal.name}</div>
+                            <div class="saved-deal-meta">
+                                ${date} • Purchase: ${formatCurrency(deal.inputs.purchasePrice)} • ARV: ${formatCurrency(deal.inputs.arv)}
+                            </div>
+                        </div>
+                        <div class="saved-deal-profit ${profitClass}">
+                            ${formatCurrency(deal.results.netProfit)}
+                        </div>
+                        <div class="saved-deal-actions" onclick="event.stopPropagation()">
+                            <button class="btn-icon" onclick="deleteDeal(${deal.id})" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Show compare button if deals exist
+            if (deals.length >= 2) {
+                updateCompareButton();
+            }
+        }
+
+        // Clear inputs
+        function clearInputs() {
+            Object.values(inputs).forEach(input => input.value = '');
+            calculate();
+            showNotification('✓ Calculator cleared');
+        }
+
+        // Update Compare Button visibility
+        function updateCompareButton() {
+            const checkboxes = document.querySelectorAll('.deal-checkbox:checked');
+            const compareBtn = document.getElementById('compareDealsBtn');
+            
+            if (checkboxes.length >= 2) {
+                compareBtn.style.display = 'block';
+                compareBtn.textContent = `⚖️ Compare Selected (${checkboxes.length})`;
+            } else {
+                compareBtn.style.display = 'none';
+            }
+        }
+
+        // Compare selected deals
+        function compareDeals() {
+            const checkboxes = document.querySelectorAll('.deal-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.dataset.dealId));
+            
+            if (selectedIds.length < 2) {
+                alert('Please select at least 2 deals to compare');
+                return;
+            }
+            
+            if (selectedIds.length > 4) {
+                alert('Please select maximum 4 deals to compare');
+                return;
+            }
+            
+            const allDeals = getSavedDeals();
+            const selectedDeals = allDeals.filter(d => selectedIds.includes(d.id));
+            
+            renderComparison(selectedDeals);
+            document.getElementById('comparisonModal').classList.add('active');
+        }
+
+        // Render comparison table
+        function renderComparison(deals) {
+            const content = document.getElementById('comparisonContent');
+            
+            // Find best deal by ROI
+            const bestDeal = deals.reduce((best, current) => 
+                current.results.roi > best.results.roi ? current : best
+            );
+            
+            const comparisonHTML = `
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #1F4E5F, #2A9D8F); color: white;">
+                                <th style="padding: 16px; text-align: left; font-weight: 600;">Metric</th>
+                                ${deals.map(deal => `
+                                    <th style="padding: 16px; text-align: right; font-weight: 600;">
+                                        ${deal.name}
+                                        ${deal.id === bestDeal.id ? ' 🏆' : ''}
+                                    </th>
+                                `).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${renderComparisonRow('Purchase Price', deals, d => formatCurrency(d.inputs.purchasePrice))}
+                            ${renderComparisonRow('Rehab Budget', deals, d => formatCurrency(d.inputs.rehabBudget))}
+                            ${renderComparisonRow('ARV', deals, d => formatCurrency(d.inputs.arv))}
+                            ${renderComparisonRow('Holding Period', deals, d => `${d.inputs.holdingPeriod} months`)}
+                            ${renderComparisonRow('Monthly Holding Cost', deals, d => formatCurrency(d.inputs.monthlyHoldingCost))}
+                            ${renderComparisonRow('Total Investment', deals, d => formatCurrency(d.results.totalProjectCost), true)}
+                            ${renderComparisonRow('Net Profit', deals, d => formatCurrency(d.results.netProfit), true, d => d.results.netProfit)}
+                            ${renderComparisonRow('ROI', deals, d => `${d.results.roi.toFixed(2)}%`, true, d => d.results.roi)}
+                            ${renderComparisonRow('Max Allowable Offer', deals, d => formatCurrency(d.results.mao))}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 8px;">
+                    <h4 style="margin: 0 0 10px 0; color: #065f46; font-size: 18px;">🏆 Recommendation</h4>
+                    <p style="margin: 0; font-size: 16px; color: #047857;">
+                        <strong>${bestDeal.name}</strong> appears to be the best deal with the highest ROI of 
+                        <strong>${bestDeal.results.roi.toFixed(2)}%</strong> and a profit of 
+                        <strong>${formatCurrency(bestDeal.results.netProfit)}</strong>.
+                    </p>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" onclick="exportComparisonPDF()">📄 Export Comparison as PDF</button>
+                </div>
+            `;
+            
+            content.innerHTML = comparisonHTML;
+        }
+
+        // Helper function to render comparison row
+        function renderComparisonRow(label, deals, getValue, highlight = false, compareValue = null) {
+            let bestValue = null;
+            if (highlight && compareValue) {
+                bestValue = Math.max(...deals.map(compareValue));
+            }
+            
+            return `
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 14px; font-weight: 500; color: #374151;">${label}</td>
+                    ${deals.map(deal => {
+                        const value = getValue(deal);
+                        const isBest = highlight && compareValue && compareValue(deal) === bestValue;
+                        return `
+                            <td style="padding: 14px; text-align: right; ${isBest ? 'background: #d1fae5; font-weight: 600; color: #065f46;' : 'color: #4b5563;'}">
+                                ${value}${isBest ? ' ⭐' : ''}
+                            </td>
+                        `;
+                    }).join('')}
+                </tr>
+            `;
+        }
+
+        // Close comparison modal
+        function closeComparisonModal() {
+            document.getElementById('comparisonModal').classList.remove('active');
+        }
+
+        // Export comparison as PDF
+        function exportComparisonPDF() {
+            const checkboxes = document.querySelectorAll('.deal-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.dataset.dealId));
+            const allDeals = getSavedDeals();
+            const selectedDeals = allDeals.filter(d => selectedIds.includes(d.id));
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            const orange = [255, 107, 53];
+            const teal = [31, 78, 95];
+            
+            // Header
+            doc.setFillColor(...orange);
+            doc.rect(0, 0, 297, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Flipmo - Deal Comparison', 15, 15);
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, 15, 22);
+            
+            let yPos = 40;
+            
+            // Deal names
+            doc.setTextColor(...teal);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Comparing Deals:', 15, yPos);
+            yPos += 6;
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            selectedDeals.forEach((deal, idx) => {
+                doc.text(`${idx + 1}. ${deal.name}`, 20, yPos);
+                yPos += 5;
+            });
+            
+            yPos += 5;
+            
+            // Comparison table (simplified for PDF)
+            const metrics = [
+                { label: 'Purchase Price', getValue: d => formatCurrency(d.inputs.purchasePrice) },
+                { label: 'ARV', getValue: d => formatCurrency(d.inputs.arv) },
+                { label: 'Rehab Budget', getValue: d => formatCurrency(d.inputs.rehabBudget) },
+                { label: 'Net Profit', getValue: d => formatCurrency(d.results.netProfit) },
+                { label: 'ROI', getValue: d => `${d.results.roi.toFixed(2)}%` }
+            ];
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            
+            metrics.forEach(metric => {
+                doc.text(metric.label, 15, yPos);
+                selectedDeals.forEach((deal, idx) => {
+                    doc.text(metric.getValue(deal), 80 + (idx * 50), yPos);
+                });
+                yPos += 6;
+            });
+            
+            yPos += 10;
+            
+            // Best deal
+            const bestDeal = selectedDeals.reduce((best, current) => 
+                current.results.roi > best.results.roi ? current : best
+            );
+            
+            doc.setTextColor(...orange);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`🏆 Best Deal: ${bestDeal.name} (ROI: ${bestDeal.results.roi.toFixed(2)}%)`, 15, yPos);
+            
+            doc.save('Deal_Comparison.pdf');
+            showNotification('✓ Comparison exported as PDF!');
+        }
+
+        // Export to PDF (simplified - just shows alert for now)
+        function exportToPDF() {
+            const dealName = inputs.dealName.value.trim() || 'Untitled Deal';
+            
+            // Get jsPDF from the UMD bundle
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Flipmo branding colors
+            const orange = [255, 107, 53];
+            const teal = [31, 78, 95];
+            const gray = [74, 85, 104];
+            
+            let yPos = 20;
+            
+            // Header with Flipmo branding
+            doc.setFillColor(...orange);
+            doc.rect(0, 0, 210, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Flipmo', 15, 15);
+            doc.setFontSize(12);
+            doc.text('Deal Analysis Report', 15, 23);
+            
+            yPos = 45;
+            
+            // Deal Name
+            doc.setTextColor(...teal);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text(dealName, 15, yPos);
+            yPos += 10;
+            
+            // Date
+            doc.setTextColor(...gray);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, 15, yPos);
+            yPos += 15;
+            
+            // Purchase Details Section
+            doc.setTextColor(...teal);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('PURCHASE DETAILS', 15, yPos);
+            yPos += 8;
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            
+            const formatCurrency = (val) => `$${parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            const formatPercent = (val) => `${parseFloat(val).toFixed(2)}%`;
+            
+            const purchaseDetails = [
+                ['Purchase Price:', formatCurrency(inputs.purchasePrice.value)],
+                ['Rehab Budget:', formatCurrency(inputs.rehabBudget.value)],
+                ['ARV (After Repair Value):', formatCurrency(inputs.arv.value)],
+                ['Holding Period:', `${inputs.holdingPeriod.value} months`],
+                ['Monthly Holding Cost:', formatCurrency(inputs.monthlyHoldingCost.value)],
+                ['Selling Cost:', `${inputs.sellingCostPercent.value}%`]
+            ];
+            
+            purchaseDetails.forEach(([label, value]) => {
+                doc.text(label, 20, yPos);
+                doc.text(value, 120, yPos);
+                yPos += 6;
+            });
+            
+            yPos += 10;
+            
+            // Financial Analysis Section
+            doc.setTextColor(...teal);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('FINANCIAL ANALYSIS', 15, yPos);
+            yPos += 8;
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            
+            const totalInvestment = parseFloat(inputs.purchasePrice.value) + 
+                                  parseFloat(inputs.rehabBudget.value) + 
+                                  (parseFloat(inputs.monthlyHoldingCost.value) * parseFloat(inputs.holdingPeriod.value));
+            
+            const sellingCosts = parseFloat(inputs.arv.value) * (parseFloat(inputs.sellingCostPercent.value) / 100);
+            const netProceeds = parseFloat(inputs.arv.value) - sellingCosts;
+            const totalProfit = netProceeds - totalInvestment;
+            const roi = ((totalProfit / totalInvestment) * 100);
+            const mao = parseFloat(inputs.arv.value) * 0.70 - parseFloat(inputs.rehabBudget.value);
+            
+            const analysis = [
+                ['Total Investment:', formatCurrency(totalInvestment)],
+                ['ARV:', formatCurrency(inputs.arv.value)],
+                ['Selling Costs:', formatCurrency(sellingCosts)],
+                ['Net Proceeds:', formatCurrency(netProceeds)],
+                ['Total Profit:', formatCurrency(totalProfit)],
+                ['ROI:', formatPercent(roi)],
+                ['Maximum Allowable Offer:', formatCurrency(mao)]
+            ];
+            
+            analysis.forEach(([label, value]) => {
+                doc.text(label, 20, yPos);
+                doc.setFont('helvetica', 'bold');
+                doc.text(value, 120, yPos);
+                doc.setFont('helvetica', 'normal');
+                yPos += 6;
+            });
+            
+            yPos += 10;
+            
+            // Investment Recommendation
+            doc.setTextColor(...orange);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            
+            if (roi < 10) {
+                doc.text('⚠️  ROI below 10% — consider if this deal meets your criteria', 15, yPos);
+            } else if (roi >= 10 && roi < 20) {
+                doc.text('✓  Fair deal — ROI is acceptable', 15, yPos);
+            } else {
+                doc.text('🏆  Strong deal — Excellent ROI!', 15, yPos);
+            }
+            
+            yPos += 15;
+            
+            // Footer
+            doc.setDrawColor(...gray);
+            doc.line(15, yPos, 195, yPos);
+            yPos += 8;
+            
+            doc.setTextColor(...gray);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'italic');
+            doc.text('This analysis is for informational purposes only. Always conduct your own due diligence.', 15, yPos);
+            yPos += 5;
+            doc.text('Generated by Flipmo — flipmo.io', 15, yPos);
+            
+            // Save the PDF
+            const fileName = `${dealName.replace(/[^a-z0-9]/gi, '_')}_Analysis.pdf`;
+            doc.save(fileName);
+            
+            showNotification('PDF exported successfully!');
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Simple alert for now - can be enhanced with a toast notification
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #059669;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Scroll to calculator
+        function scrollToCalculator() {
+            document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Event listeners
+        Object.values(inputs).forEach(input => {
+            if (input.id !== 'dealName') {
+                input.addEventListener('input', calculate);
+            }
+        });
+
+        document.getElementById('saveDealBtn').addEventListener('click', saveDeal);
+        document.getElementById('clearBtn').addEventListener('click', clearInputs);
+        document.getElementById('exportBtn').addEventListener('click', exportToPDF);
+        document.getElementById('clearAllDealsBtn').addEventListener('click', clearAllDeals);
+        document.getElementById('compareDealsBtn').addEventListener('click', compareDeals);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initial render
+        calculate();
+        renderSavedDeals();
+    </script>
+</body>
+</html>

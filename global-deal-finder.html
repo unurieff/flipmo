@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Deal Finder | Flipmo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0F1419;
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1F4E5F 0%, #2A9D8F 100%);
+            padding: 100px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,107,53,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link:hover {
+            transform: translateX(-5px);
+            color: #FFB830;
+        }
+        
+        h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #fff 0%, #FFB830 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 24px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 60px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .quiz-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFB830 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .question {
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+        
+        .question:nth-child(1) { animation-delay: 0.1s; }
+        .question:nth-child(2) { animation-delay: 0.2s; }
+        .question:nth-child(3) { animation-delay: 0.3s; }
+        .question:nth-child(4) { animation-delay: 0.4s; }
+        .question:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .q-label {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .q-hint {
+            font-size: 16px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 24px;
+            display: block;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .opt {
+            background: linear-gradient(135deg, rgba(31,78,95,0.4), rgba(42,157,143,0.3));
+            border: 2px solid rgba(42,157,143,0.3);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .opt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(255,184,48,0.2));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .opt:hover::before {
+            opacity: 1;
+        }
+        
+        .opt:hover {
+            border-color: #FF6B35;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255,107,53,0.3);
+        }
+        
+        .opt.selected {
+            background: linear-gradient(135deg, #FF6B35, #FFB830);
+            border-color: #FFB830;
+            box-shadow: 0 20px 40px rgba(255,107,53,0.4);
+            transform: translateY(-4px);
+        }
+        
+        .opt-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .opt-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .opt-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .checkbox-opt {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(31,78,95,0.3);
+            border: 2px solid rgba(42,157,143,0.3);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-opt:hover {
+            background: rgba(42,157,143,0.3);
+            border-color: #2A9D8F;
+        }
+        
+        .checkbox-opt.selected {
+            background: linear-gradient(135deg, rgba(255,107,53,0.3), rgba(255,184,48,0.3));
+            border-color: #FF6B35;
+        }
+        
+        .checkbox-opt input {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #FF6B35;
+        }
+        
+        .checkbox-opt label {
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .find-btn {
+            width: 100%;
+            padding: 28px;
+            background: linear-gradient(135deg, #FF6B35, #FFB830);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 12px 40px rgba(255,107,53,0.5);
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .find-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .find-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .find-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 50px rgba(255,107,53,0.6);
+        }
+        
+        .find-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .find-btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.6s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .results-header {
+            background: linear-gradient(135deg, rgba(31,78,95,0.5), rgba(42,157,143,0.4));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 32px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .results-header h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFB830 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .results-header p {
+            font-size: 20px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .market {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 40px;
+            margin-bottom: 28px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .market::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,107,53,0.05), rgba(255,184,48,0.05));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .market:hover::before {
+            opacity: 1;
+        }
+        
+        .market:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(255,107,53,0.3);
+            border-color: rgba(255,107,53,0.5);
+        }
+        
+        .market.rank-1 {
+            border: 2px solid #FFB830;
+            background: linear-gradient(135deg, rgba(255,184,48,0.1), rgba(255,107,53,0.1));
+        }
+        
+        .rank-badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 56px;
+            z-index: 1;
+        }
+        
+        .market-header {
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .market-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        
+        .market-sub {
+            font-size: 20px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 16px;
+        }
+        
+        .match-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B35, #FFB830);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .metric {
+            background: rgba(31,78,95,0.4);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(42,157,143,0.3);
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFB830;
+        }
+        
+        .market-desc {
+            font-size: 17px;
+            line-height: 1.7;
+            color: rgba(255,255,255,0.85);
+            margin: 24px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .pros, .cons {
+            padding: 24px;
+            border-radius: 16px;
+        }
+        
+        .pros {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+        }
+        
+        .cons {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+        }
+        
+        .pros h4 {
+            color: #10b981;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .cons h4 {
+            color: #ef4444;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+            font-size: 15px;
+            line-height: 2;
+        }
+        
+        .pros li {
+            color: rgba(16, 185, 129, 0.9);
+        }
+        
+        .cons li {
+            color: rgba(239, 68, 68, 0.9);
+        }
+        
+        .pros li::before {
+            content: "✓ ";
+            margin-right: 8px;
+        }
+        
+        .cons li::before {
+            content: "✗ ";
+            margin-right: 8px;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #2A9D8F, #1F4E5F);
+            color: white;
+            border: none;
+            padding: 20px 48px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 50px auto;
+            box-shadow: 0 8px 30px rgba(42, 157, 143, 0.4);
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(42, 157, 143, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .card { padding: 32px; }
+            .options { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <a href="index.html" class="back-link">← All Tools</a>
+        <h1>🌍 Global Deal Finder</h1>
+        <p>Answer 5 questions. Discover the world's best opportunities.</p>
+    </div>
+
+    <div class="container">
+        <div id="quiz" class="card">
+            <h2 class="quiz-title">Find Your Perfect Investment Market</h2>
+
+            <div class="question">
+                <label class="q-label">1. What's your investment budget?</label>
+                <span class="q-hint">Total capital available for this investment</span>
+                <div class="options" id="budgetOpts">
+                    <div class="opt" data-v="100k"><div class="opt-icon">💰</div><div class="opt-title">$50K-$100K</div><div class="opt-desc">Entry level</div></div>
+                    <div class="opt" data-v="250k"><div class="opt-icon">💵</div><div class="opt-title">$100K-$250K</div><div class="opt-desc">Solid budget</div></div>
+                    <div class="opt" data-v="500k"><div class="opt-icon">💎</div><div class="opt-title">$250K-$500K</div><div class="opt-desc">Strong budget</div></div>
+                    <div class="opt" data-v="1m"><div class="opt-icon">👑</div><div class="opt-title">$500K-$1M</div><div class="opt-desc">Large budget</div></div>
+                    <div class="opt" data-v="2m"><div class="opt-icon">🏆</div><div class="opt-title">$1M+</div><div class="opt-desc">Premium</div></div>
+                </div>
+            </div>
+
+            <div class="question">
+                <label class="q-label">2. Primary investment goal?</label>
+                <span class="q-hint">What matters most to you?</span>
+                <div class="options" id="goalOpts">
+                    <div class="opt" data-v="cashflow"><div class="opt-icon">💸</div><div class="opt-title">Cash Flow</div><div class="opt-desc">Monthly income</div></div>
+                    <div class="opt" data-v="appreciation"><div class="opt-icon">📈</div><div class="opt-title">Appreciation</div><div class="opt-desc">Long-term growth</div></div>
+                    <div class="opt" data-v="flip"><div class="opt-icon">🔨</div><div class="opt-title">Quick Flip</div><div class="opt-desc">Fast profit</div></div>
+                    <div class="opt" data-v="balanced"><div class="opt-icon">⚖️</div><div class="opt-title">Balanced</div><div class="opt-desc">Best of both</div></div>
+                </div>
+            </div>
+
+            <div class="question">
+                <label class="q-label">3. Investment timeline?</label>
+                <span class="q-hint">How long will you hold?</span>
+                <div class="options" id="timelineOpts">
+                    <div class="opt" data-v="short"><div class="opt-icon">⚡</div><div class="opt-title">6-12 months</div><div class="opt-desc">Quick flip</div></div>
+                    <div class="opt" data-v="medium"><div class="opt-icon">📅</div><div class="opt-title">1-3 years</div><div class="opt-desc">Medium term</div></div>
+                    <div class="opt" data-v="long"><div class="opt-icon">🏔️</div><div class="opt-title">3-5 years</div><div class="opt-desc">Long term</div></div>
+                    <div class="opt" data-v="verylong"><div class="opt-icon">🌳</div><div class="opt-title">5+ years</div><div class="opt-desc">Legacy</div></div>
+                </div>
+            </div>
+
+            <div class="question">
+                <label class="q-label">4. Risk tolerance?</label>
+                <span class="q-hint">How much risk are you comfortable with?</span>
+                <div class="options" id="riskOpts">
+                    <div class="opt" data-v="conservative"><div class="opt-icon">🛡️</div><div class="opt-title">Conservative</div><div class="opt-desc">Safety first</div></div>
+                    <div class="opt" data-v="moderate"><div class="opt-icon">⚖️</div><div class="opt-title">Moderate</div><div class="opt-desc">Balanced</div></div>
+                    <div class="opt" data-v="aggressive"><div class="opt-icon">🚀</div><div class="opt-title">Aggressive</div><div class="opt-desc">High reward</div></div>
+                </div>
+            </div>
+
+            <div class="question">
+                <label class="q-label">5. Preferred regions?</label>
+                <span class="q-hint">Select all that interest you</span>
+                <div class="checkbox-group">
+                    <div class="checkbox-opt" data-v="us"><input type="checkbox" id="r-us"><label for="r-us">🇺🇸 United States</label></div>
+                    <div class="checkbox-opt" data-v="gulf"><input type="checkbox" id="r-gulf"><label for="r-gulf">🇦🇪 Gulf States (UAE, Saudi)</label></div>
+                    <div class="checkbox-opt" data-v="europe"><input type="checkbox" id="r-europe"><label for="r-europe">🇪🇺 Europe (UK, Germany)</label></div>
+                    <div class="checkbox-opt" data-v="asia"><input type="checkbox" id="r-asia"><label for="r-asia">🇮🇳 Asia (India, Singapore)</label></div>
+                    <div class="checkbox-opt" data-v="latam"><input type="checkbox" id="r-latam"><label for="r-latam">🇧🇷 Latin America (Brazil, Mexico)</label></div>
+                    <div class="checkbox-opt" data-v="all"><input type="checkbox" id="r-all" checked><label for="r-all">🌍 Show ALL (recommended)</label></div>
+                </div>
+            </div>
+
+            <button class="find-btn" id="findBtn" disabled onclick="findDeals()"><span>🔍 Find My Best Deals</span></button>
+        </div>
+
+        <div id="results" class="results">
+            <div class="results-header">
+                <h2>Your Top Opportunities</h2>
+                <p>Ranked by match score for your criteria</p>
+            </div>
+            <div id="marketList"></div>
+            <button class="export-btn" onclick="exportPDF()">📄 Export as PDF</button>
+        </div>
+    </div>
+
+    <script>
+        let choices = {budget: null, goal: null, timeline: null, risk: null, regions: []};
+        
+        document.querySelectorAll('.options').forEach(group => {
+            group.querySelectorAll('.opt').forEach(opt => {
+                opt.onclick = function() {
+                    group.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const id = group.id;
+                    const v = this.dataset.v;
+                    if(id === 'budgetOpts') choices.budget = v;
+                    if(id === 'goalOpts') choices.goal = v;
+                    if(id === 'timelineOpts') choices.timeline = v;
+                    if(id === 'riskOpts') choices.risk = v;
+                    updateBtn();
+                };
+            });
+        });
+        
+        document.querySelectorAll('.checkbox-opt').forEach(opt => {
+            opt.onclick = function(e) {
+                if(e.target.tagName !== 'INPUT') {
+                    const cb = this.querySelector('input');
+                    cb.checked = !cb.checked;
+                }
+                this.classList.toggle('selected', this.querySelector('input').checked);
+                choices.regions = [...document.querySelectorAll('.checkbox-opt input:checked')].map(cb => cb.parentElement.dataset.v);
+            };
+        });
+        
+        function updateBtn() {
+            document.getElementById('findBtn').disabled = !(choices.budget && choices.goal && choices.timeline && choices.risk);
+        }
+        
+        const markets = [
+            {city:"Dubai Marina",country:"UAE",region:"gulf",type:"Off-Plan Tower",entry:"$300K-$1M",roi:15,cash:6,appr:8,risk:"Moderate",timeline:["medium","long"],goals:["appreciation","balanced"],budget:"250k",desc:"Off-plan units with payment plans. Strong rental yields and handover profit potential.",pros:["Payment plans","Tax-free","High appreciation"],cons:["Currency risk","Developer risk","HOA fees"]},
+            {city:"Austin",country:"USA",region:"us",type:"Single Family",entry:"$300K-$500K",roi:18,cash:5,appr:10,risk:"Moderate",timeline:["short","medium"],goals:["flip","appreciation"],budget:"250k",desc:"Tech hub growth drives exceptional appreciation. Strong rental demand from professionals.",pros:["Tech growth","No state tax","Strong demand"],cons:["Rising taxes","Competition","Cooling market"]},
+            {city:"Phoenix",country:"USA",region:"us",type:"Fix & Flip",entry:"$200K-$400K",roi:22,cash:6,appr:9,risk:"Moderate",timeline:["short","medium"],goals:["flip","cashflow"],budget:"100k",desc:"Excellent flip opportunities with lower entry prices. Migration from California drives demand.",pros:["Lower entry","High margins","Growing population"],cons:["Summer heat","Water concerns","HOA restrictions"]},
+            {city:"Lisbon",country:"Portugal",region:"europe",type:"City Apartment",entry:"$250K-$600K",roi:12,cash:4,appr:7,risk:"Conservative",timeline:["long","verylong"],goals:["appreciation","balanced"],budget:"250k",desc:"Golden Visa eligible. Tourism drives rental income. Stable European market.",pros:["Golden Visa","Tourism income","Lifestyle"],cons:["Lower yield","Regulations","Language barrier"]},
+            {city:"Playa del Carmen",country:"Mexico",region:"latam",type:"Tourism Rental",entry:"$150K-$400K",roi:16,cash:8,appr:6,risk:"Moderate",timeline:["medium","long"],goals:["cashflow","balanced"],budget:"100k",desc:"Beach tourism drives high occupancy. Lower entry prices. USD-friendly market.",pros:["Tourism demand","Lower entry","Beach location"],cons:["Currency risk","Seasonal","Management needed"]},
+            {city:"Mumbai",country:"India",region:"asia",type:"Luxury Condo",entry:"$400K-$800K",roi:14,cash:3,appr:9,risk:"Aggressive",timeline:["long","verylong"],goals:["appreciation"],budget:"500k",desc:"Massive population growth. Limited supply in premium areas. Strong capital appreciation.",pros:["Population growth","Limited supply","Growing economy"],cons:["Low rental yield","Bureaucracy","Regulations"]},
+            {city:"Miami",country:"USA",region:"us",type:"Waterfront Condo",entry:"$400K-$800K",roi:14,cash:5,appr:8,risk:"Moderate",timeline:["medium","long"],goals:["balanced","cashflow"],budget:"500k",desc:"International demand. Strong tourism. No state tax. Waterfront premium.",pros:["No state tax","International appeal","Tourism"],cons:["Hurricane risk","HOA fees","Insurance costs"]},
+            {city:"Berlin",country:"Germany",region:"europe",type:"Apartment",entry:"$400K-$700K",roi:10,cash:3,appr:6,risk:"Conservative",timeline:["long","verylong"],goals:["appreciation"],budget:"500k",desc:"Stable European capital. Housing shortage drives steady growth. Tenant protections.",pros:["Stable market","Capital city","Euro stability"],cons:["Rent control","Lower yields","High costs"]},
+            {city:"Riyadh",country:"Saudi Arabia",region:"gulf",type:"New Development",entry:"$250K-$600K",roi:16,cash:5,appr:9,risk:"Moderate",timeline:["medium","long"],goals:["appreciation","balanced"],budget:"250k",desc:"Vision 2030 mega-projects. Rapid development. Tax-free rental income.",pros:["Government investment","Tax-free","High growth"],cons:["Market volatility","Cultural adjustment","New market"]},
+            {city:"Nashville",country:"USA",region:"us",type:"Rental Property",entry:"$250K-$450K",roi:17,cash:7,appr:8,risk:"Moderate",timeline:["medium","long"],goals:["cashflow","balanced"],budget:"250k",desc:"Music city growth. Strong job market. Excellent rental demand from young professionals.",pros:["Job growth","Tourism","Music industry"],cons:["Rising prices","Competition","Property taxes"]}
+        ];
+        
+        function findDeals() {
+            // Filter markets by region first
+            let filteredMarkets = markets;
+            if (!choices.regions.includes('all')) {
+                filteredMarkets = markets.filter(m => choices.regions.includes(m.region));
+            }
+            
+            // Then score the filtered markets
+            const scored = filteredMarkets.map(m => {
+                let score = 50;
+                if((choices.budget === '100k' && ['100k'].includes(m.budget)) || 
+                   (choices.budget === '250k' && ['100k','250k'].includes(m.budget)) ||
+                   (choices.budget === '500k' && ['250k','500k'].includes(m.budget)) ||
+                   (choices.budget === '1m' && ['500k','1m'].includes(m.budget)) ||
+                   (choices.budget === '2m')) score += 15;
+                if(m.goals.includes(choices.goal)) score += 20;
+                if(m.timeline.includes(choices.timeline)) score += 15;
+                const riskMap = {conservative:'Conservative',moderate:'Moderate',aggressive:'Aggressive'};
+                if(m.risk === riskMap[choices.risk]) score += 10;
+                return {...m, score: Math.min(100, score)};
+            }).sort((a,b) => b.score - a.score).slice(0,8);
+            displayResults(scored);
+        }
+        
+        function displayResults(markets) {
+            const list = document.getElementById('marketList');
+            const ranks = ['🏆','🥈','🥉'];
+            list.innerHTML = markets.map((m,i) => `
+                <div class="market rank-${i+1}">
+                    <div class="rank-badge">${ranks[i] || ''}</div>
+                    <div class="market-header">
+                        <div class="market-title">${m.city}</div>
+                        <div class="market-sub">${m.country} • ${m.type}</div>
+                        <span class="match-badge">${m.score}% Match</span>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric"><div class="metric-label">Entry Price</div><div class="metric-value">${m.entry}</div></div>
+                        <div class="metric"><div class="metric-label">ROI</div><div class="metric-value">${m.roi}%</div></div>
+                        <div class="metric"><div class="metric-label">Cash Flow</div><div class="metric-value">${m.cash}%</div></div>
+                        <div class="metric"><div class="metric-label">Appreciation</div><div class="metric-value">${m.appr}%</div></div>
+                    </div>
+                    <div class="market-desc">${m.desc}</div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>Key Advantages</h4>
+                            <ul>${m.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Key Risks</h4>
+                            <ul>${m.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('results').classList.add('show');
+            window.scrollTo({top:0,behavior:'smooth'});
+        }
+        
+        function exportPDF() {
+            const {jsPDF} = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(20);
+            doc.setFont('helvetica','bold');
+            doc.text('Global Deal Finder Results', 20, 20);
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 28);
+            doc.setFontSize(12);
+            doc.setFont('helvetica','normal');
+            let y = 40;
+            const markets = [...document.querySelectorAll('.market')];
+            markets.slice(0,5).forEach((m,i) => {
+                const title = m.querySelector('.market-title').textContent;
+                const country = m.querySelector('.market-sub').textContent.split('•')[0].trim();
+                const score = m.querySelector('.match-badge').textContent;
+                doc.setFont('helvetica','bold');
+                doc.text(`${i+1}. ${title}, ${country}`, 20, y);
+                doc.setFont('helvetica','normal');
+                doc.text(`Match: ${score}`, 150, y);
+                y += 8;
+            });
+            doc.save('Global_Deals.pdf');
+            alert('✓ Results exported!');
+        }
+        
+        choices.regions = ['all'];
+    </script>
+</body>
+</html>

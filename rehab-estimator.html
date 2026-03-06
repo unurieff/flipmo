@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rehab Estimator | Flipmo - Flip Renovation Cost Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--flipmo-cream) 0%, #FFE5D9 50%, var(--flipmo-cream) 100%);
+            color: var(--flipmo-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .flipmo-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .flipmo-logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .flipmo-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .flipmo-back-btn:hover {
+            background: var(--flipmo-orange);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 5% 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--flipmo-gray);
+            margin-bottom: 2rem;
+        }
+
+        .calculator-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--flipmo-black);
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+        }
+
+        .cost-label {
+            font-weight: 500;
+            color: var(--flipmo-black);
+            flex: 1;
+        }
+
+        .cost-input {
+            width: 150px;
+            padding: 0.5rem 0.75rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: right;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .cost-input:focus {
+            outline: none;
+            border-color: var(--flipmo-orange);
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .highlight-card h3 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-value {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .result-box h4 {
+            font-size: 0.9rem;
+            color: var(--flipmo-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-box .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--flipmo-black);
+        }
+    </style>
+</head>
+<body>
+    <nav class="flipmo-nav">
+        <a href="index.html" class="flipmo-logo">Flipmo</a>
+        <a href="index.html" class="flipmo-back-btn">← All Tools</a>
+    </nav>
+
+    <div class="hero">
+        <h1><span class="gradient-text">Rehab Estimator</span></h1>
+        <p>Estimate renovation costs for your fix & flip projects</p>
+    </div>
+
+    <div class="calculator-container">
+        <div class="card">
+            <h2>Renovation Scope</h2>
+            
+            <div class="cost-item">
+                <span class="cost-label">Kitchen Remodel</span>
+                <input type="number" class="cost-input" id="kitchen" value="15000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Bathroom(s) Remodel</span>
+                <input type="number" class="cost-input" id="bathrooms" value="8000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Flooring</span>
+                <input type="number" class="cost-input" id="flooring" value="5000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Interior Paint</span>
+                <input type="number" class="cost-input" id="paint" value="3000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Exterior/Landscaping</span>
+                <input type="number" class="cost-input" id="exterior" value="4000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Roof</span>
+                <input type="number" class="cost-input" id="roof" value="0" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">HVAC</span>
+                <input type="number" class="cost-input" id="hvac" value="0" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Electrical</span>
+                <input type="number" class="cost-input" id="electrical" value="2000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Plumbing</span>
+                <input type="number" class="cost-input" id="plumbing" value="2000" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Windows/Doors</span>
+                <input type="number" class="cost-input" id="windows" value="0" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Permits & Inspections</span>
+                <input type="number" class="cost-input" id="permits" value="1500" oninput="calculate()">
+            </div>
+            
+            <div class="cost-item">
+                <span class="cost-label">Contingency Buffer (%)</span>
+                <input type="number" class="cost-input" id="contingency" value="10" oninput="calculate()">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="highlight-card">
+                <h3>Total Rehab Budget</h3>
+                <div class="highlight-value" id="totalBudget">$0</div>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-box">
+                    <h4>Base Costs</h4>
+                    <div class="value" id="baseCosts">$0</div>
+                </div>
+                <div class="result-box">
+                    <h4>Contingency</h4>
+                    <div class="value" id="contingencyAmount">$0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const kitchen = parseFloat(document.getElementById('kitchen').value) || 0;
+            const bathrooms = parseFloat(document.getElementById('bathrooms').value) || 0;
+            const flooring = parseFloat(document.getElementById('flooring').value) || 0;
+            const paint = parseFloat(document.getElementById('paint').value) || 0;
+            const exterior = parseFloat(document.getElementById('exterior').value) || 0;
+            const roof = parseFloat(document.getElementById('roof').value) || 0;
+            const hvac = parseFloat(document.getElementById('hvac').value) || 0;
+            const electrical = parseFloat(document.getElementById('electrical').value) || 0;
+            const plumbing = parseFloat(document.getElementById('plumbing').value) || 0;
+            const windows = parseFloat(document.getElementById('windows').value) || 0;
+            const permits = parseFloat(document.getElementById('permits').value) || 0;
+            const contingencyPct = parseFloat(document.getElementById('contingency').value) || 0;
+
+            const baseCosts = kitchen + bathrooms + flooring + paint + exterior + roof + hvac + electrical + plumbing + windows + permits;
+            const contingencyAmount = baseCosts * (contingencyPct / 100);
+            const totalBudget = baseCosts + contingencyAmount;
+
+            document.getElementById('baseCosts').textContent = formatCurrency(baseCosts);
+            document.getElementById('contingencyAmount').textContent = formatCurrency(contingencyAmount);
+            document.getElementById('totalBudget').textContent = formatCurrency(totalBudget);
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Calculate on load
+        calculate();
+    </script>
+</body>
+</html>

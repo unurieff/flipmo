@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates Library | Flipmo - Professional Real Estate Documents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --flipmo-orange: #FF6B35;
+            --flipmo-coral: #FF8C61;
+            --flipmo-teal: #1F4E5F;
+            --flipmo-bright-teal: #2A9D8F;
+            --flipmo-yellow: #FFB830;
+            --flipmo-cream: #FFF8F0;
+            --flipmo-black: #0F1419;
+            --flipmo-gray: #4A5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--flipmo-cream) 0%, #FFE5D9 50%, var(--flipmo-cream) 100%);
+            color: var(--flipmo-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .flipmo-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.25rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .flipmo-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .flipmo-logo {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .beta-badge {
+            background: linear-gradient(135deg, var(--flipmo-bright-teal), var(--flipmo-teal));
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .flipmo-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .flipmo-back-btn:hover {
+            background: var(--flipmo-orange);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 5% 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Clash Display', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--flipmo-gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            border-radius: 16px;
+            background: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--flipmo-orange);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+            color: var(--flipmo-gray);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--flipmo-gray);
+            font-weight: 500;
+        }
+
+        .category {
+            margin-bottom: 4rem;
+        }
+
+        .category-header {
+            margin-bottom: 2rem;
+        }
+
+        .category-title {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 2rem;
+            color: var(--flipmo-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-description {
+            font-size: 1rem;
+            color: var(--flipmo-gray);
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .template-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--flipmo-orange), var(--flipmo-coral));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        .template-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .template-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .template-name {
+            font-family: 'Clash Display', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--flipmo-black);
+            margin-bottom: 0.75rem;
+        }
+
+        .template-description {
+            font-size: 0.95rem;
+            color: var(--flipmo-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--flipmo-orange), var(--flipmo-coral));
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--flipmo-cream);
+            color: var(--flipmo-black);
+        }
+
+        .btn-secondary:hover {
+            background: var(--flipmo-orange);
+            color: white;
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--flipmo-yellow), #FFA500);
+            color: var(--flipmo-black);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 968px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="flipmo-nav">
+        <div class="flipmo-logo-container">
+            <a href="index.html" class="flipmo-logo">Flipmo</a>
+            <span class="beta-badge">Beta</span>
+        </div>
+        <a href="index.html" class="flipmo-back-btn">← All Tools</a>
+    </nav>
+
+    <div class="hero">
+        <h1>Professional <span class="gradient-text">Real Estate Templates</span></h1>
+        <p>Ready-to-use contracts, agreements, and documents. Save time, money, and legal fees.</p>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search templates..." onkeyup="filterTemplates()">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">24</div>
+                <div class="stat-label">Templates</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">$2K+</div>
+                <div class="stat-label">Legal Fees Saved</div>
+            </div>
+        </div>
+
+        <!-- PURCHASE & ACQUISITION -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Purchase & Acquisition</h2>
+                <p class="category-description">Everything you need to make offers and close deals</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">📄</div>
+                    <h3 class="template-name">Purchase Agreement</h3>
+                    <p class="template-description">Complete residential purchase contract with contingencies, earnest money, and closing terms.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Purchase Agreement')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Purchase Agreement')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">✉️</div>
+                    <h3 class="template-name">Letter of Intent (LOI)</h3>
+                    <p class="template-description">Non-binding LOI for commercial or residential properties. Start negotiations professionally.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Letter of Intent')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Letter of Intent')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🤝</div>
+                    <h3 class="template-name">Assignment Agreement</h3>
+                    <p class="template-description">Wholesale contract to assign your purchase rights to another buyer. Perfect for wholesalers.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Assignment Agreement')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Assignment Agreement')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">💰</div>
+                    <h3 class="template-name">Cash Offer Letter</h3>
+                    <p class="template-description">Professional cash offer template that stands out to sellers. Includes proof of funds.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Cash Offer Letter')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Cash Offer Letter')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTRACTOR & REHAB -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Contractor & Rehab</h2>
+                <p class="category-description">Protect yourself and manage contractors effectively</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">🔨</div>
+                    <h3 class="template-name">Contractor Agreement</h3>
+                    <p class="template-description">Legally binding contract with payment schedule, scope of work, and completion deadlines.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Contractor Agreement')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Contractor Agreement')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📋</div>
+                    <h3 class="template-name">Scope of Work Template</h3>
+                    <p class="template-description">Detailed SOW document to prevent scope creep. Line-item breakdown of all work.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Scope of Work')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Scope of Work')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🏗️</div>
+                    <h3 class="template-name">Inspection Checklist</h3>
+                    <p class="template-description">Comprehensive property inspection checklist for evaluating condition before purchase.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Inspection Checklist')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Inspection Checklist')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📸</div>
+                    <h3 class="template-name">Before & After Documentation</h3>
+                    <p class="template-description">Photo documentation template to track rehab progress and protect against contractor disputes.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Photo Documentation')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Photo Documentation')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RENTAL & LEASE -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Rental & Lease</h2>
+                <p class="category-description">Landlord documents for rental properties and tenants</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">🏠</div>
+                    <h3 class="template-name">Residential Lease Agreement</h3>
+                    <p class="template-description">State-compliant lease with rent terms, deposits, pet policies, and maintenance responsibilities.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Residential Lease')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Residential Lease')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📝</div>
+                    <h3 class="template-name">Tenant Application</h3>
+                    <p class="template-description">Professional rental application form with income verification and reference checks.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Tenant Application')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Tenant Application')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🔑</div>
+                    <h3 class="template-name">Move-In/Move-Out Inspection</h3>
+                    <p class="template-description">Detailed property condition report to protect your security deposit and avoid disputes.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Move-In Inspection')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Move-In Inspection')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">⚠️</div>
+                    <h3 class="template-name">Eviction Notice</h3>
+                    <p class="template-description">Legally compliant eviction notice templates for non-payment or lease violations.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Eviction Notice')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Eviction Notice')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARKETING & LISTING -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Marketing & Listing</h2>
+                <p class="category-description">Sell faster with professional marketing materials</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">🖼️</div>
+                    <h3 class="template-name">Property Marketing Flyer</h3>
+                    <p class="template-description">Eye-catching single-page flyer template. Perfect for open houses and listings.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Marketing Flyer')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Marketing Flyer')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📊</div>
+                    <h3 class="template-name">Investment Property One-Pager</h3>
+                    <p class="template-description">Professional investment summary showing cash flow, ROI, and property details.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Investment One-Pager')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Investment One-Pager')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📧</div>
+                    <h3 class="template-name">Seller Follow-Up Emails</h3>
+                    <p class="template-description">10 proven email templates to stay in touch with sellers and close more deals.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Email Templates')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Email Templates')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📱</div>
+                    <h3 class="template-name">Social Media Post Templates</h3>
+                    <p class="template-description">Ready-made captions and post ideas for Facebook, Instagram, and LinkedIn.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Social Media Posts')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Social Media Posts')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FINANCING & LEGAL -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Financing & Legal</h2>
+                <p class="category-description">Contracts for creative financing and partnerships</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">💼</div>
+                    <h3 class="template-name">Seller Financing Agreement</h3>
+                    <p class="template-description">Complete seller finance contract with terms, payments, and default provisions.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Seller Financing')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Seller Financing')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🤝</div>
+                    <h3 class="template-name">JV Partnership Agreement</h3>
+                    <p class="template-description">Joint venture agreement for partnering on deals. Defines profit splits and responsibilities.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('JV Agreement')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('JV Agreement')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📃</div>
+                    <h3 class="template-name">Private Money Loan Agreement</h3>
+                    <p class="template-description">Lending agreement for private money/hard money loans with interest and repayment terms.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Loan Agreement')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Loan Agreement')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🏦</div>
+                    <h3 class="template-name">Promissory Note</h3>
+                    <p class="template-description">Legal promissory note for loans between parties. Enforceable payment promise.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Promissory Note')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Promissory Note')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKLISTS & WORKSHEETS -->
+        <div class="category">
+            <div class="category-header">
+                <h2 class="category-title">Checklists & Worksheets</h2>
+                <p class="category-description">Stay organized and never miss a step</p>
+            </div>
+
+            <div class="template-grid">
+                <div class="template-card">
+                    <div class="template-icon">✅</div>
+                    <h3 class="template-name">Deal Analysis Worksheet</h3>
+                    <p class="template-description">Comprehensive spreadsheet for analyzing deals before you make an offer.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Deal Worksheet')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Deal Worksheet')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">🗓️</div>
+                    <h3 class="template-name">Closing Checklist</h3>
+                    <p class="template-description">Step-by-step checklist from accepted offer to closing day. Never miss a deadline.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Closing Checklist')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Closing Checklist')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">📦</div>
+                    <h3 class="template-name">Property Management Tracker</h3>
+                    <p class="template-description">Track expenses, repairs, tenant info, and rent payments all in one place.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('PM Tracker')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('PM Tracker')">👁 Preview</button>
+                    </div>
+                </div>
+
+                <div class="template-card">
+                    <div class="template-icon">💵</div>
+                    <h3 class="template-name">Funding Source Tracker</h3>
+                    <p class="template-description">Organize all your lenders, hard money contacts, and funding sources in one sheet.</p>
+                    <div class="template-actions">
+                        <button class="btn btn-primary" onclick="downloadTemplate('Funding Tracker')">📥 Download</button>
+                        <button class="btn btn-secondary" onclick="previewTemplate('Funding Tracker')">👁 Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterTemplates() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const cards = document.querySelectorAll('.template-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.template-name').textContent.toLowerCase();
+                const description = card.querySelector('.template-description').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        const templateFiles = {
+            'Purchase Agreement': 'Purchase-Agreement',
+            'Letter of Intent': 'Letter-of-Intent',
+            'Assignment Agreement': 'Assignment-Agreement',
+            'Cash Offer Letter': 'Cash-Offer-Letter',
+            'Contractor Agreement': 'Contractor-Agreement',
+            'Scope of Work': 'Scope-of-Work',
+            'Inspection Checklist': 'Inspection-Checklist',
+            'Photo Documentation': 'Before-After-Documentation',
+            'Residential Lease': 'Residential-Lease-Agreement',
+            'Tenant Application': 'Tenant-Application',
+            'Move-In Inspection': 'Move-In-Move-Out-Inspection',
+            'Eviction Notice': 'Eviction-Notice',
+            'Marketing Flyer': 'Property-Marketing-Flyer',
+            'Investment One-Pager': 'Investment-Property-One-Pager',
+            'Email Templates': 'Seller-Follow-Up-Emails',
+            'Social Media Posts': 'Social-Media-Post-Templates',
+            'Seller Financing': 'Seller-Financing-Agreement',
+            'JV Agreement': 'JV-Partnership-Agreement',
+            'Loan Agreement': 'Private-Money-Loan-Agreement',
+            'Promissory Note': 'Promissory-Note',
+            'Deal Worksheet': 'Deal-Analysis-Worksheet',
+            'Closing Checklist': 'Closing-Checklist',
+            'PM Tracker': 'Property-Management-Tracker',
+            'Funding Tracker': 'Funding-Source-Tracker'
+        };
+
+        function downloadTemplate(templateName) {
+            const fileName = templateFiles[templateName];
+            if (fileName) {
+                const ext = fileName === 'Deal-Analysis-Worksheet' ? '.xlsx' : '.docx';
+                const link = document.createElement('a');
+                link.href = `templates/${fileName}${ext}`;
+                link.download = `${fileName}${ext}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('Template file not found');
+            }
+        }
+
+        function previewTemplate(templateName) {
+            const fileName = templateFiles[templateName];
+            if (fileName) {
+                window.open(`templates/${fileName}.pdf`, '_blank');
+            } else {
+                alert('PDF preview not available');
+            }
+        }
+    </script>
+</body>
+</html>
